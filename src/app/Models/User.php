@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar',
     ];
 
     /**
@@ -41,4 +42,28 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // 出品した商品
+    public function items()
+    {
+        return $this->hasMany(Item::class);
+    }
+
+    // いいねした商品
+    public function likedItems()
+    {
+        return $this->belongsToMany(Item::class, 'likes')->withTimestamps();
+    }
+
+    // 投稿したコメント
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    // 購入した商品
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
+    }
 }
