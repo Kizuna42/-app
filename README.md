@@ -4,8 +4,8 @@
 
 ## アプリケーションURL				
 				
-- 開発環境：http://localhost/				
-- phpMyAdmin：http://localhost:8080/				
+- 開発環境：http://localhost:8081/			
+- phpMyAdmin：http://localhost:8082/				
 				
 ## 環境構築				
 				
