@@ -17,6 +17,7 @@ class ItemController extends Controller
     {
         $items = Item::with(['user', 'category'])
             ->where('is_sold', false)
+            ->where('user_id', '!=', Auth::id())
             ->latest()
             ->paginate(12);
 
@@ -28,6 +29,10 @@ class ItemController extends Controller
      */
     public function mylist()
     {
+        if (!Auth::check()) {
+            return view('items.mylist', ['items' => collect()]);
+        }
+
         $items = Auth::user()->likedItems()
             ->with(['user', 'category'])
             ->latest()
@@ -42,7 +47,15 @@ class ItemController extends Controller
     public function show(Item $item)
     {
         $item->load(['user', 'category', 'comments.user']);
-        return view('items.show', compact('item'));
+
+        $likesCount = $item->likes()->count();
+        $commentsCount = $item->comments()->count();
+
+        return view('items.show', [
+            'item' => $item,
+            'likesCount' => $likesCount,
+            'commentsCount' => $commentsCount,
+        ]);
     }
 
     /**

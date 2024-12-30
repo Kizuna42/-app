@@ -1,18 +1,22 @@
 @extends('layouts.app')
 
+@section('head')
+<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+@endsection
+
 @section('content')
-<div class="container">
+<div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">会員登録</div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">会員登録</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
 
                         <div class="mb-3">
-                            <label for="name" class="form-label">名前</label>
+                            <label for="name" class="form-label">ユーザー名</label>
                             <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
                             @error('name')
                                 <span class="invalid-feedback" role="alert">
@@ -42,14 +46,17 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="password-confirm" class="form-label">パスワード（確認）</label>
+                            <label for="password-confirm" class="form-label">確認用パスワード</label>
                             <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                         </div>
 
-                        <div class="mb-0">
-                            <button type="submit" class="btn btn-primary">
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-danger">
                                 登録する
                             </button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{{ route('login') }}">ログインはこちら</a>
                         </div>
                     </form>
                 </div>

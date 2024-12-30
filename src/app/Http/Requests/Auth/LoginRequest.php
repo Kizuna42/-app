@@ -76,4 +76,14 @@ class LoginRequest extends FormRequest
     {
         return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
     }
+
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'メールアドレスを入力してください',
+            'password.required' => 'パスワードを入力してください',
+            'email.email' => '有効なメールアドレスを入力してください',
+            'auth.failed' => 'ログイン情報が登録されていません。',
+        ];
+    }
 } 

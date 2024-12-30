@@ -1,0 +1,38 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+.card {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.card-header {
+    font-size: 1.5rem;
+    padding: 10px 15px;
+}
+
+.btn-danger {
+    background-color: #ff5a5f;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #e14e4e;
+}
+
+.text-center a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.text-center a:hover {
+    text-decoration: underline;
+} 

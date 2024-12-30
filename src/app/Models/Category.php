@@ -46,4 +46,4 @@ class Category extends Model
 
         return implode(' > ', $path);
     }
-} 
+}

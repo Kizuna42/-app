@@ -24,6 +24,11 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        if (!Auth::user()->hasVerifiedEmail()) {
+            Auth::logout();
+            return redirect()->route('login')->withErrors(['email' => 'メール認証が完了していません。']);
+        }
+
         $request->session()->regenerate();
 
         return redirect()->intended(route('items.index'))
