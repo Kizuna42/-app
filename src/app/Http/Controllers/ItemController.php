@@ -15,11 +15,15 @@ class ItemController extends Controller
      */
     public function index(Request $request)
     {
-        $items = Item::with(['user', 'category'])
+        $query = Item::with(['user', 'category'])
             ->where('is_sold', false)
-            ->where('user_id', '!=', Auth::id())
-            ->latest()
-            ->paginate(12);
+            ->where('user_id', '!=', Auth::id());
+
+        if ($search = $request->input('search')) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        $items = $query->latest()->paginate(12);
 
         return view('items.index', compact('items'));
     }

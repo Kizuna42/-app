@@ -1,27 +1,31 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
+    background-color: #fff;
     margin: 0;
     padding: 0;
 }
 
-.container {
-    margin-top: 50px;
+h2 {
+    font-size: 1.8rem;
+    text-align: center;
+    font-weight: bold;
 }
 
-.card {
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.card-header {
-    font-size: 1.5rem;
-    padding: 10px 15px;
+.form-control {
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 40px;
 }
 
 .btn-danger {
     background-color: #ff5a5f;
     border: none;
+    padding: 10px;
+    font-size: 1rem;
+    margin-top: 20px;
+    font-weight: bold;
 }
 
 .btn-danger:hover {
@@ -35,4 +39,9 @@ body {
 
 .text-center a:hover {
     text-decoration: underline;
-} 
+}
+
+.form-label {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
