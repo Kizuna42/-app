@@ -1,82 +1,80 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">プロフィール編集</div>
+        <div class="col-md-6">
+            <h2 class="text-center mb-4">プロフィール設定</h2>
+            <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-
-                        <div class="mb-4">
-                            <div class="text-center">
-                                @if($user->avatar)
-                                    <img src="{{ asset('storage/' . $user->avatar) }}" class="img-fluid rounded-circle mb-3" alt="{{ $user->name }}" style="width: 150px; height: 150px; object-fit: cover;">
-                                @else
-                                    <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 150px; height: 150px;">
-                                        <span class="h1">{{ substr($user->name, 0, 1) }}</span>
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="mb-3">
-                                <label for="avatar" class="form-label">プロフィール画像</label>
-                                <input id="avatar" type="file" class="form-control @error('avatar') is-invalid @enderror" name="avatar" accept="image/*">
-                                @error('avatar')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                <div class="d-flex align-items-center justify-content-center mb-4">
+                    @if($user->avatar)
+                        <img src="{{ asset('storage/' . $user->avatar) }}" class="img-fluid rounded-circle" alt="{{ $user->name }}" style="width: 100px; height: 100px; object-fit: cover;">
+                    @else
+                        <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                            <span class="h1">{{ substr($user->name, 0, 1) }}</span>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="name" class="form-label">名前</label>
-                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', $user->name) }}" required>
-                            @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="email" class="form-label">メールアドレス</label>
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email', $user->email) }}" required>
-                            @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label">新しいパスワード（変更する場合のみ）</label>
-                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password">
-                            @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password-confirm" class="form-label">新しいパスワード（確認）</label>
-                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation">
-                        </div>
-
-                        <div class="mb-0">
-                            <button type="submit" class="btn btn-primary">
-                                更新する
-                            </button>
-                        </div>
-                    </form>
+                    @endif
+                    <div class="ms-3">
+                        <label for="avatar" class="btn btn-outline-danger">画像を選択する</label>
+                        <input id="avatar" type="file" class="d-none @error('avatar') is-invalid @enderror" name="avatar" accept="image/*">
+                        @error('avatar')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
                 </div>
-            </div>
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">ユーザー名</label>
+                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', $user->name) }}" required>
+                    @error('name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="postal_code" class="form-label">郵便番号</label>
+                    <input id="postal_code" type="text" class="form-control @error('postal_code') is-invalid @enderror" name="postal_code" value="{{ old('postal_code', $user->postal_code) }}" required>
+                    @error('postal_code')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">住所</label>
+                    <input id="address" type="text" class="form-control @error('address') is-invalid @enderror" name="address" value="{{ old('address', $user->address) }}" required>
+                    @error('address')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="building_name" class="form-label">建物名</label>
+                    <input id="building_name" type="text" class="form-control @error('building_name') is-invalid @enderror" name="building_name" value="{{ old('building_name', $user->building_name) }}">
+                    @error('building_name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-danger">
+                        更新する
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-@endsection 
+@endsection

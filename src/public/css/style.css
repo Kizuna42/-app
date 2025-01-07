@@ -45,3 +45,20 @@ h2 {
     font-weight: bold;
     font-size: 1.2rem;
 }
+
+.btn-outline-danger {
+    border: 2px solid #ff5a5f;
+    color: #ff5a5f;
+    font-weight: bold;
+}
+
+.btn-outline-danger:hover {
+    background-color: #ff5a5f;
+    color: #fff;
+}
+
+.d-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

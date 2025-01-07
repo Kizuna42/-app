@@ -41,4 +41,4 @@
         {{ $purchases->links() }}
     </div>
 </div>
-@endsection 
+@endsection

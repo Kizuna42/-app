@@ -17,7 +17,8 @@ class UserController extends Controller
     public function show()
     {
         $user = Auth::user()->load(['items', 'purchases.item']);
-        return view('users.show', compact('user'));
+        $items = $user->items;
+        return view('users.show', compact('user', 'items'));
     }
 
     /**
