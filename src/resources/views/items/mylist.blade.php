@@ -23,4 +23,4 @@
         @endforeach
     </div>
 </div>
-@endsection 
+@endsection

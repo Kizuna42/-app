@@ -45,7 +45,7 @@ class Item extends Model
     // コメント
     public function comments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class)->orderBy('created_at', 'desc');
     }
 
     // 購入情報
@@ -68,4 +68,9 @@ class Item extends Model
         }
         return $this->likedUsers()->where('user_id', $user->id)->exists();
     }
-} 
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+}

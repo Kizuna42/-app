@@ -22,10 +22,6 @@ h2 {
 .btn-danger {
     background-color: #ff5a5f;
     border: none;
-    padding: 10px;
-    font-size: 1rem;
-    margin-top: 20px;
-    font-weight: bold;
 }
 
 .btn-danger:hover {
@@ -49,7 +45,6 @@ h2 {
 .btn-outline-danger {
     border: 2px solid #ff5a5f;
     color: #ff5a5f;
-    font-weight: bold;
 }
 
 .btn-outline-danger:hover {
@@ -61,4 +56,13 @@ h2 {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+h1,h4{
+    font-weight: bold;
 }

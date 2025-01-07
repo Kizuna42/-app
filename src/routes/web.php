@@ -6,12 +6,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LikeController;
 
 // トップページ（商品一覧）
 Route::get('/', [ItemController::class, 'index'])->name('items.index');
@@ -42,6 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/purchase/{item}', [PurchaseController::class, 'store'])->name('purchases.store');
     Route::get('/purchase/address/{item}', [PurchaseController::class, 'editAddress'])->name('purchases.address.edit');
     Route::put('/purchase/address/{item}', [PurchaseController::class, 'updateAddress'])->name('purchases.address.update');
+    Route::get('/purchase/create/{item}', [PurchaseController::class, 'create'])->name('purchases.create');
 });
 
 // マイページ関連
@@ -51,4 +48,12 @@ Route::middleware('auth')->group(function () {
     Route::put('/mypage/profile', [UserController::class, 'update'])->name('users.update');
     Route::get('/mypage?tab=buy', [UserController::class, 'purchases'])->name('users.purchases');
     Route::get('/mypage?tab=sell', [UserController::class, 'items'])->name('users.items');
+});
+
+// 商品コメントを保存するためのルート
+Route::post('/items/{item}/comments', [CommentController::class, 'store'])->name('items.comments.store');
+
+// いいね機能
+Route::middleware('auth')->group(function () {
+    Route::post('/items/{item}/like', [LikeController::class, 'toggle'])->name('items.like.toggle');
 });

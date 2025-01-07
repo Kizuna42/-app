@@ -15,27 +15,13 @@ class Comment extends Model
         'item_id',
     ];
 
-    // コメントしたユーザー
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // コメントされた商品
     public function item()
     {
         return $this->belongsTo(Item::class);
-    }
-
-    // 返信コメント
-    public function replies()
-    {
-        return $this->hasMany(Comment::class, 'parent_id');
-    }
-
-    // 親コメント
-    public function parent()
-    {
-        return $this->belongsTo(Comment::class, 'parent_id');
     }
 }

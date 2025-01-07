@@ -3,20 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-
-    <!-- Styles -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>フリマアプリ</title>
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 </head>
 <body>
@@ -27,8 +19,8 @@
                     <img src="{{ asset('images/Free Market App Logo.svg') }}" alt="Logo" height="32">
                 </a>
                 @if (!request()->is('login') && !request()->is('register'))
-                    <form form class="d-flex mx-auto" method="GET" action="{{ route('items.index') }}">
-                        <input class="" type="search" name="search" placeholder="なにをお探しですか？" aria-label="Search" value="{{ request('search') }}" style="padding: 8px; width: 450px;">
+                    <form class="d-flex mx-auto" method="GET" action="{{ route('items.index') }}">
+                        <input type="search" name="search" placeholder="なにをお探しですか？" aria-label="Search" value="{{ request('search') }}" style="padding: 8px; width: 450px;">
                     </form>
                 @endif
                 <ul class="navbar-nav ms-auto">
@@ -48,6 +40,13 @@
                         </li>
                         <li class="nav-item">
                             <a class="btn btn-light" href="{{ route('items.create') }}">出品</a>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}">ログイン</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('register') }}">新規登録</a>
                         </li>
                     @endauth
                 </ul>
@@ -75,7 +74,21 @@
         </main>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // CSRFトークンをAjaxリクエストのデフォルトヘッダーに設定
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            window.axios = {
+                defaults: {
+                    headers: {
+                        'X-CSRF-TOKEN': token
+                    }
+                }
+            };
+        });
+    </script>
+    @stack('scripts')
 </body>
 </html>
