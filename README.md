@@ -16,7 +16,7 @@ cd <リポジトリ名>
 ```
 2. Dockerコンテナのビルド
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 3. コンテナに入る
 ```bash
