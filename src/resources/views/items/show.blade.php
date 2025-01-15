@@ -17,7 +17,9 @@
         <!-- 商品情報 -->
         <div class="col-md-6">
             <h1 class="product-title">{{ $item->name }}</h1>
-            <p class="brand-name">{{ $item->category->name }}</p>
+            <p class="brand-name">
+                {{ $item->categories->pluck('name')->join('、') }}
+            </p>
 
             <p class="price-text">¥{{ number_format($item->price) }}<span class="tax-included">(税込)</span></p>
 
@@ -48,11 +50,15 @@
                 <div class="info-grid">
                     <div class="info-item">
                         <span class="label">カテゴリー</span>
-                        <span class="badge bg-light text-dark">{{ $item->category->name }}</span>
+                        <div>
+                            @foreach($item->categories as $category)
+                                <span class="badge bg-light text-dark me-1">{{ $category->name }}</span>
+                            @endforeach
+                        </div>
                     </div>
                     <div class="info-item">
                         <span class="label">商品の状態</span>
-                        <span class="badge bg-light text-dark">{{ $item->condition }}</span>
+                        <span class="badge bg-light text-dark">{{ $item->condition_name }}</span>
                     </div>
                 </div>
             </div>

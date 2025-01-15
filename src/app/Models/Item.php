@@ -14,8 +14,8 @@ class Item extends Model
         'description',
         'price',
         'image',
+        'condition',
         'user_id',
-        'category_id',
         'is_sold',
     ];
 
@@ -24,53 +24,56 @@ class Item extends Model
         'price' => 'integer',
     ];
 
-    // 出品者
+    // 商品状態の定数
+    const CONDITION_GOOD = 'good';
+    const CONDITION_FAIR = 'fair';
+    const CONDITION_POOR = 'poor';
+
+    // 商品状態の表示名
+    const CONDITION_NAMES = [
+        self::CONDITION_GOOD => '目立った傷や汚れなし',
+        self::CONDITION_FAIR => 'やや傷や汚れあり',
+        self::CONDITION_POOR => '状態が悪い',
+    ];
+
+    // リレーション
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // カテゴリー
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
-    }
-
-    // いいねしたユーザー
-    public function likedUsers()
-    {
-        return $this->belongsToMany(User::class, 'likes')->withTimestamps();
-    }
-
-    // コメント
-    public function comments()
-    {
-        return $this->hasMany(Comment::class)->orderBy('created_at', 'desc');
-    }
-
-    // 購入情報
-    public function purchase()
-    {
-        return $this->hasOne(Purchase::class);
-    }
-
-    // いいね数を取得
-    public function getLikesCountAttribute()
-    {
-        return $this->likedUsers()->count();
-    }
-
-    // 指定ユーザーがいいね済みかチェック
-    public function isLikedBy($user)
-    {
-        if ($user === null) {
-            return false;
-        }
-        return $this->likedUsers()->where('user_id', $user->id)->exists();
+        return $this->belongsToMany(Category::class, 'item_category');
     }
 
     public function likes()
     {
         return $this->hasMany(Like::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->orderBy('created_at', 'desc');
+    }
+
+    // アクセサ
+    public function getConditionNameAttribute()
+    {
+        return self::CONDITION_NAMES[$this->condition] ?? $this->condition;
+    }
+
+    // いいね関連のメソッド
+    public function isLikedBy($user)
+    {
+        if ($user === null) {
+            return false;
+        }
+        return $this->likes()->where('user_id', $user->id)->exists();
+    }
+
+    public function getLikesCountAttribute()
+    {
+        return $this->likes()->count();
     }
 }
