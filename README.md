@@ -20,7 +20,7 @@ docker compose up -d --build
 ```
 3. コンテナに入る
 ```bash
-docker-compose exec php bash
+docker compose exec php bash
 ```
 4. パッケージをインストール
 ```bash
