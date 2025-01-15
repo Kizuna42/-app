@@ -27,8 +27,8 @@
                 <div class="text-center me-4">
                     <button class="btn like-button d-block mx-auto" data-item-id="{{ $item->id }}" style="border: none; background: none; padding: 0;">
                         <i class="fa-star fa-lg {{ $item->isLikedBy(auth()->user()) ? 'fas text-warning' : 'far text-secondary' }}"></i>
+                        <span class="likes-count d-block mt-1" style="min-width: 30px">{{ $item->likes_count }}</span>
                     </button>
-                    <span class="d-block mt-1" style="min-width: 30px">{{ $item->likes_count }}</span>
                 </div>
                 <div class="text-center">
                     <div class="d-block mx-auto">
@@ -64,30 +64,42 @@
             </div>
 
             <div class="product-section">
-                <h4 class="section-title mb-3">コメント ({{ session('commentsCount', $commentsCount) }})</h4>
+                <h4 class="section-title mb-3">コメント (<span id="comments-count">{{ $commentsCount }}</span>)</h4>
                 <div class="comments-container bg-light p-3">
                     @if($item->comments->isEmpty())
-                        <p class="text-center mb-0">こちらにコメントが入ります。</p>
-                    @else
+                        <p class="text-center mb-0" id="no-comments-message">こちらにコメントが入ります。</p>
+                    @endif
+                    <div id="comments-list">
                         @foreach($item->comments as $comment)
                             <div class="comment-item mb-3">
                                 <div class="d-flex align-items-center mb-2">
                                     <div class="commenter-info">
                                         <strong>{{ $comment->user->name }}</strong>
+                                        <small class="text-muted ms-2">{{ $comment->created_at->format('Y/m/d H:i') }}</small>
                                     </div>
                                 </div>
                                 <p class="comment-text mb-0">{{ $comment->content }}</p>
                             </div>
                         @endforeach
-                    @endif
+                    </div>
                 </div>
 
                 @auth
-                    <form method="POST" action="{{ route('items.comments.store', $item) }}" class="mt-4" novalidate>
+                    <form method="POST" action="{{ route('items.comments.store', $item) }}" class="mt-4" id="comment-form" novalidate>
                         @csrf
                         <div class="mb-3">
                             <label for="comment" class="form-label">商品へのコメント</label>
-                            <textarea class="form-control @error('content') is-invalid @enderror" id="comment" name="content" rows="3" required>{{ old('content') }}</textarea>
+                            <textarea 
+                                class="form-control @error('content') is-invalid @enderror" 
+                                id="comment" 
+                                name="content" 
+                                rows="3" 
+                                required 
+                                maxlength="255"
+                            >{{ old('content') }}</textarea>
+                            <div class="text-muted small mt-1">
+                                <span id="char-count">0</span>/255文字
+                            </div>
                             @error('content')
                                 <span class="invalid-feedback">
                                     {{ $message }}
@@ -115,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
             @auth
                 const itemId = this.dataset.itemId;
                 const starIcon = this.querySelector('i');
-                const likesCount = this.querySelector('.likes-count');
+                const likesCountElement = this.querySelector('.likes-count');
 
                 try {
                     const response = await fetch(`/items/${itemId}/like`, {
@@ -126,26 +138,113 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     });
 
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
                     const data = await response.json();
 
                     // いいねの状態を更新
                     if (data.is_liked) {
-                        starIcon.classList.remove('far');
-                        starIcon.classList.add('fas');
+                        starIcon.classList.remove('far', 'text-secondary');
+                        starIcon.classList.add('fas', 'text-warning');
                     } else {
-                        starIcon.classList.remove('fas');
-                        starIcon.classList.add('far');
+                        starIcon.classList.remove('fas', 'text-warning');
+                        starIcon.classList.add('far', 'text-secondary');
                     }
 
                     // いいね数を更新
-                    likesCount.textContent = data.likes_count;
+                    likesCountElement.textContent = data.likes_count;
 
                 } catch (error) {
                     console.error('Error:', error);
+                    alert('いいねの処理中にエラーが発生しました。');
                 }
             @else
                 window.location.href = '{{ route('login') }}';
             @endauth
+        });
+    }
+});
+
+// コメントフォームの文字数カウント機能
+document.addEventListener('DOMContentLoaded', function() {
+    const commentForm = document.getElementById('comment-form');
+    const textarea = document.getElementById('comment');
+    const charCount = document.getElementById('char-count');
+
+    if (textarea && charCount) {
+        textarea.addEventListener('input', function() {
+            const count = this.value.length;
+            charCount.textContent = count;
+
+            if (count > 255) {
+                textarea.classList.add('is-invalid');
+                charCount.classList.add('text-danger');
+            } else {
+                textarea.classList.remove('is-invalid');
+                charCount.classList.remove('text-danger');
+            }
+        });
+    }
+
+    if (commentForm) {
+        commentForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    body: new FormData(this),
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'コメントの送信に失敗しました。');
+                }
+
+                // コメントリストを更新
+                const commentsList = document.getElementById('comments-list');
+                const noCommentsMessage = document.getElementById('no-comments-message');
+                const commentsCount = document.getElementById('comments-count');
+
+                // 新しいコメントのHTML
+                const newComment = `
+                    <div class="comment-item mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="commenter-info">
+                                <strong>${data.user_name}</strong>
+                                <small class="text-muted ms-2">${data.created_at}</small>
+                            </div>
+                        </div>
+                        <p class="comment-text mb-0">${data.content}</p>
+                    </div>
+                `;
+
+                // "コメントがありません"メッセージを非表示
+                if (noCommentsMessage) {
+                    noCommentsMessage.style.display = 'none';
+                }
+
+                // 新しいコメントを追加
+                commentsList.insertAdjacentHTML('beforeend', newComment);
+
+                // コメント数を更新
+                commentsCount.textContent = data.comments_count;
+
+                // フォームをリセット
+                this.reset();
+                charCount.textContent = '0';
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert(error.message);
+            }
         });
     }
 });

@@ -14,26 +14,49 @@
         <a href="{{ route('users.edit', $user->id) }}" class="btn btn-outline-danger">プロフィールを編集</a>
     </div>
 
-    <ul class="nav nav-tabs justify-content-center mb-4">
+    <ul class="nav nav-tabs mb-4">
         <li class="nav-item">
-            <a class="nav-link active" href="#">出品した商品</a>
+            <a class="nav-link {{ request('tab') !== 'purchased' ? 'active text-danger' : 'text-dark' }}"
+                href="{{ route('users.show', ['user' => $user->id, 'tab' => 'listed']) }}">
+                出品した商品
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">購入した商品</a>
+            <a class="nav-link {{ request('tab') === 'purchased' ? 'active text-danger' : 'text-dark' }}"
+                href="{{ route('users.show', ['user' => $user->id, 'tab' => 'purchased']) }}">
+                購入した商品
+            </a>
         </li>
     </ul>
 
     <div class="row">
-        @foreach($items ?? '' as $item)
-            <div class="col-md-3 mb-4">
-                <div class="card">
-                    <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top" alt="{{ $item->name }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $item->name }}</h5>
-                    </div>
-                </div>
+        @if($items->isEmpty())
+            <div class="col-12 text-center">
+                <p class="text-muted">
+                    {{ request('tab') === 'purchased' ? '購入した商品はありません。' : '出品した商品はありません。' }}
+                </p>
             </div>
-        @endforeach
+        @else
+            @foreach($items as $item)
+                <div class="col-md-3 mb-4">
+                    <a href="{{ route('items.show', $item) }}" class="text-decoration-none">
+                        <div class="card h-100">
+                            @if($item->image)
+                                <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top" alt="{{ $item->name }}" style="height: 200px; object-fit: cover;">
+                            @else
+                                <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                                    <span>No Image</span>
+                                </div>
+                            @endif
+                            <div class="card-body">
+                                <h5 class="card-title text-dark">{{ $item->name }}</h5>
+                                <p class="card-text text-danger">¥{{ number_format($item->price) }}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            @endforeach
+        @endif
     </div>
 </div>
 @endsection
