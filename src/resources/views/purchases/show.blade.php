@@ -41,6 +41,7 @@
                 @if(auth()->user()->postal_code && auth()->user()->address)
                     <p class="mb-2 fs-5">〒{{ substr(auth()->user()->postal_code, 0, 3) }}-{{ substr(auth()->user()->postal_code, 3) }}</p>
                     <p class="mb-0 fs-5">{{ auth()->user()->address }}</p>
+                    <p class="mb-0 fs-5">{{ auth()->user()->building_name }}</p>
                 @else
                     <p class="text-muted mb-0 fs-5">配送先住所を登録してください</p>
                 @endif

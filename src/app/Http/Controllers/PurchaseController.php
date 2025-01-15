@@ -70,13 +70,8 @@ class PurchaseController extends Controller
      */
     public function editAddress(Item $item)
     {
-        $purchase = $item->purchase;
-        
-        if (!$purchase || $purchase->user_id !== Auth::id()) {
-            abort(404);
-        }
-
-        return view('purchases.address', compact('purchase'));
+        $prefectures = ['北海道', '青森県', '岩手県', /* ... 他の都道府県 ... */];
+        return view('purchases.address', compact('item', 'prefectures'));
     }
 
     /**
@@ -84,23 +79,13 @@ class PurchaseController extends Controller
      */
     public function updateAddress(Request $request, Item $item)
     {
-        $purchase = $item->purchase;
-        
-        if (!$purchase || $purchase->user_id !== Auth::id()) {
-            abort(404);
-        }
-
-        $validated = $request->validate([
-            'postal_code' => 'required|string|size:7',
-            'prefecture' => 'required|string',
-            'city' => 'required|string',
-            'address' => 'required|string',
-            'phone' => 'required|string|regex:/^[0-9]{10,11}$/',
+        $user = Auth::user();
+        $user->update([
+            'postal_code' => $request->postal_code,
+            'address' => $request->address,
+            'building_name' => $request->building
         ]);
 
-        $purchase->update($validated);
-
-        return redirect()->route('purchases.show', $item)
-            ->with('success', '配送先住所を更新しました。');
+        return redirect()->route('purchases.show', $item);
     }
-} 
+}
