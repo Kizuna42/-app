@@ -70,3 +70,122 @@ h1,h4{
 .nav-link {
     color: white;
 }
+
+.product-title {
+    font-size: 3rem;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+}
+
+.brand-name {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.price-text {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+}
+
+.tax-included {
+    font-size: 1.2rem;
+    font-weight: normal;
+    color: #666;
+}
+
+.section-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.info-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.info-item .label {
+    font-weight: bold;
+    min-width: 120px;
+}
+
+.badge {
+    font-weight: normal;
+    padding: 0.5rem 1rem;
+}
+
+.comments-container {
+    border-radius: 4px;
+}
+
+.comment-text {
+    color: #666;
+}
+
+.btn-danger {
+    background-color: #ff4d4d;
+    border: none;
+    font-size: 1.2rem;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.btn-danger:hover {
+    background-color: #ff3333;
+}
+
+.icon-section {
+    margin-bottom: 2rem;
+}
+
+.like-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 2px solid #666;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+}
+
+.like-count i {
+    font-size: 1.5rem;
+    color: #666;
+}
+
+.like-count span {
+    font-size: 1.5rem;
+    color: #666;
+}
+
+.like-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    outline: none;
+}
+
+.like-button:hover {
+    opacity: 0.8;
+}
+
+.like-button:focus {
+    outline: none;
+}
+
+.comment-count {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}

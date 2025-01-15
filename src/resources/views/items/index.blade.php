@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
+<div class="container mt-5">
     <!-- タブ切り替え -->
     <ul class="nav nav-tabs mb-4">
         <li class="nav-item">
