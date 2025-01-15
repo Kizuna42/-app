@@ -22,7 +22,7 @@ class ItemController extends Controller
             if (!Auth::check()) {
                 return view('items.index', ['items' => collect(), 'tab' => $tab]);
             }
-            
+
             $items = Auth::user()->likedItems()
                 ->with(['user', 'categories'])
                 ->latest()
@@ -80,7 +80,7 @@ class ItemController extends Controller
             'condition' => 'required|in:good,fair,poor',
             'categories' => 'required|array|min:1',
             'categories.*' => 'string',
-            'image' => 'required|image|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'name.required' => '商品名を入力してください',
             'description.required' => '商品の説明を入力してください',
@@ -92,6 +92,7 @@ class ItemController extends Controller
             'categories.min' => '1つ以上のカテゴリーを選択してください',
             'image.required' => '商品画像を選択してください',
             'image.image' => '商品画像は画像ファイルを選択してください',
+            'image.mimes' => '商品画像はjpeg,png,jpg,gif形式のファイルを選択してください',
             'image.max' => '商品画像は2MB以下のファイルを選択してください',
         ]);
 
@@ -101,7 +102,16 @@ class ItemController extends Controller
             // 画像のアップロード
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                $path = Storage::disk('public')->put('items', $image);
+                $filename = time() . '_' . $image->getClientOriginalName();
+
+                // 画像を保存
+                $path = $image->storeAs('public/items', $filename);
+                if (!$path) {
+                    throw new \Exception('画像の保存に失敗しました');
+                }
+
+                // public/storageからのパスを設定
+                $imageUrl = 'storage/items/' . $filename;
             } else {
                 throw new \Exception('画像ファイルのアップロードに失敗しました。');
             }
@@ -112,7 +122,7 @@ class ItemController extends Controller
                 'description' => $validated['description'],
                 'price' => $validated['price'],
                 'condition' => $validated['condition'],
-                'image' => Storage::url($path),
+                'image' => $imageUrl,
                 'is_sold' => false,
             ]);
 
@@ -135,10 +145,10 @@ class ItemController extends Controller
             \DB::rollBack();
             \Log::error('商品出品エラー: ' . $e->getMessage());
             \Log::error($e->getTraceAsString());
-            
+
             // アップロードした画像を削除
-            if (isset($path)) {
-                Storage::disk('public')->delete($path);
+            if (isset($filename)) {
+                Storage::delete('public/items/' . $filename);
             }
 
             return back()
@@ -146,4 +156,4 @@ class ItemController extends Controller
                 ->with('error', '商品の出品に失敗しました。もう一度お試しください。');
         }
     }
-} 
+}

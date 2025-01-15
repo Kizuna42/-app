@@ -18,38 +18,39 @@
                 <a class="navbar-brand" href="{{ url('/') }}">
                     <img src="{{ asset('images/Free Market App Logo.svg') }}" alt="Logo" height="32">
                 </a>
-                @if (!request()->is('login') && !request()->is('register'))
+                @if (!request()->is('login', 'register'))
                     <form class="d-flex mx-auto" method="GET" action="{{ route('items.index') }}">
                         <input type="search" name="search" placeholder="なにをお探しですか？" aria-label="Search" value="{{ request('search') }}" style="padding: 8px; width: 450px;">
                     </form>
+                    
+                    <ul class="navbar-nav ms-auto">
+                        @auth
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault();
+                                        document.getElementById('logout-form').submit();">
+                                    ログアウト
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{{ route('users.show') }}">マイページ</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-light" href="{{ route('items.create') }}">出品</a>
+                            </li>
+                        @else
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{{ route('login') }}">ログイン</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{{ route('register') }}">新規登録</a>
+                            </li>
+                        @endauth
+                    </ul>
                 @endif
-                <ul class="navbar-nav ms-auto">
-                    @auth
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('logout') }}"
-                                onclick="event.preventDefault();
-                                    document.getElementById('logout-form').submit();">
-                                ログアウト
-                            </a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                @csrf
-                            </form>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('users.show') }}">マイページ</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-light" href="{{ route('items.create') }}">出品</a>
-                        </li>
-                    @else
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">ログイン</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">新規登録</a>
-                        </li>
-                    @endauth
-                </ul>
             </div>
         </nav>
 

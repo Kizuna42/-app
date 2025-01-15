@@ -11,7 +11,7 @@ class CommentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return auth()->check(); // ログインユーザーのみ許可
     }
 
     /**
@@ -34,4 +34,4 @@ class CommentRequest extends FormRequest
             'content.max' => 'コメントは255文字以内で入力してください',
         ];
     }
-} 
+}

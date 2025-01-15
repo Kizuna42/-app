@@ -9,7 +9,7 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h2 class="text-center mb-4">会員登録</h2>
-            <form method="POST" action="{{ route('register') }}">
+            <form method="POST" action="{{ route('register') }}" novalidate>
                 @csrf
 
                 <div class="mb-3">

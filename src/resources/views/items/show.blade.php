@@ -64,7 +64,7 @@
             </div>
 
             <div class="product-section">
-                <h4 class="section-title mb-3">コメント ({{ $commentsCount }})</h4>
+                <h4 class="section-title mb-3">コメント ({{ session('commentsCount', $commentsCount) }})</h4>
                 <div class="comments-container bg-light p-3">
                     @if($item->comments->isEmpty())
                         <p class="text-center mb-0">こちらにコメントが入ります。</p>
@@ -83,11 +83,16 @@
                 </div>
 
                 @auth
-                    <form method="POST" action="{{ route('items.comments.store', $item) }}" class="mt-4">
+                    <form method="POST" action="{{ route('items.comments.store', $item) }}" class="mt-4" novalidate>
                         @csrf
                         <div class="mb-3">
                             <label for="comment" class="form-label">商品へのコメント</label>
-                            <textarea class="form-control" id="comment" name="content" rows="3" required></textarea>
+                            <textarea class="form-control @error('content') is-invalid @enderror" id="comment" name="content" rows="3" required>{{ old('content') }}</textarea>
+                            @error('content')
+                                <span class="invalid-feedback">
+                                    {{ $message }}
+                                </span>
+                            @enderror
                         </div>
                         <button type="submit" class="btn btn-danger w-100">コメントを送信する</button>
                     </form>

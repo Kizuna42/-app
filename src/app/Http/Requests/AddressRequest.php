@@ -34,10 +34,13 @@ class AddressRequest extends FormRequest
     {
         return [
             'name.required' => 'お名前を入力してください',
+            'name.max' => 'お名前は255文字以内で入力してください',
             'postal_code.required' => '郵便番号を入力してください',
             'postal_code.regex' => '郵便番号は123-4567の形式で入力してください',
             'address.required' => '住所を入力してください',
+            'address.max' => '住所は255文字以内で入力してください',
             'building.required' => '建物名を入力してください',
+            'building.max' => '建物名は255文字以内で入力してください',
         ];
     }
 } 
