@@ -33,6 +33,15 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
+        Fortify::registerView(function () {
+            return view('auth.register');
+        });
+
+        Fortify::registeredView(function () {
+            return redirect()->route('users.edit')
+                ->with('success', 'アカウントが作成されました。プロフィール情報を入力してください。');
+        });
+
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
 

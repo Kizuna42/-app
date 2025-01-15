@@ -46,8 +46,8 @@ class UserController extends Controller
 
         $user->update($validated);
 
-        return redirect()->route('users.show')
-            ->with('success', 'プロフィールを更新しました。');
+        return redirect()->route('items.index', ['tab' => 'mylist'])
+            ->with('success', 'プロフィール情報を更新しました。マイリストをご確認ください。');
     }
 
     public function purchases()
