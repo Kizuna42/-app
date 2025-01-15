@@ -57,3 +57,8 @@ Route::post('/items/{item}/comments', [CommentController::class, 'store'])->name
 Route::middleware('auth')->group(function () {
     Route::post('/items/{item}/like', [LikeController::class, 'toggle'])->name('items.like.toggle');
 });
+
+Route::middleware('auth')->group(function () {
+    Route::post('/purchases/{item}/create-session', [PurchaseController::class, 'createSession']);
+    Route::get('/purchases/{item}/success', [PurchaseController::class, 'success'])->name('purchases.success');
+});

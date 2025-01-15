@@ -7,6 +7,8 @@ use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
 
 class PurchaseController extends Controller
 {
@@ -87,5 +89,29 @@ class PurchaseController extends Controller
         ]);
 
         return redirect()->route('purchases.show', $item);
+    }
+
+    public function createSession(Item $item)
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $session = Session::create([
+            'payment_method_types' => ['card'],
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'jpy',
+                    'product_data' => [
+                        'name' => $item->name,
+                    ],
+                    'unit_amount' => $item->price,
+                ],
+                'quantity' => 1,
+            ]],
+            'mode' => 'payment',
+            'success_url' => route('purchases.success', $item),
+            'cancel_url' => route('purchases.show', $item),
+        ]);
+
+        return response()->json(['id' => $session->id]);
     }
 }

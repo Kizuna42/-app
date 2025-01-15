@@ -22,14 +22,11 @@
             <!-- 支払い方法 -->
             <div class="mb-5 pb-4 border-bottom">
                 <h4 class="mb-4">支払い方法</h4>
-                <select class="form-select form-select-lg border-0 ps-0 @error('payment_method') is-invalid @enderror" name="payment_method" required>
+                <select class="form-select form-select-lg border-0 ps-0" id="payment_method" name="payment_method" required>
                     <option value="" selected disabled>選択してください</option>
                     <option value="convenience">コンビニ払い</option>
                     <option value="credit">カード支払い</option>
                 </select>
-                @error('payment_method')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
             </div>
 
             <!-- 配送先 -->
@@ -62,16 +59,18 @@
                     <div class="p-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="fs-5">支払い方法</span>
-                            <span id="selected-payment" class="text-muted fs-5">選択してください</span>
+                            <span class="h4 mb-0" id="selected-payment">選択してください</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 購入ボタン -->
-                <form action="{{ route('purchases.store', $item) }}" method="POST">
+                <form action="{{ route('purchases.store', $item) }}" method="POST" id="purchase-form">
                     @csrf
                     <input type="hidden" name="payment_method" id="payment_method_hidden">
-                    <button type="submit" class="btn btn-danger btn-lg w-100 py-3 rounded-3">購入する</button>
+                    <button type="submit" class="btn btn-danger btn-lg w-100 py-3 rounded-3" id="purchase-button" disabled>
+                        購入する
+                    </button>
                 </form>
             </div>
         </div>
@@ -80,10 +79,23 @@
 
 @push('scripts')
 <script>
-document.querySelector('select[name="payment_method"]').addEventListener('change', function() {
+const paymentSelect = document.getElementById('payment_method');
+const purchaseButton = document.getElementById('purchase-button');
+const selectedPayment = document.getElementById('selected-payment');
+
+paymentSelect.addEventListener('change', function() {
     const selectedText = this.options[this.selectedIndex].text;
-    document.getElementById('selected-payment').textContent = selectedText;
-    document.getElementById('payment_method_hidden').value = this.value;
+    const selectedValue = this.value;
+    
+    // 選択された支払い方法を表示
+    selectedPayment.textContent = selectedText;
+    selectedPayment.classList.remove('text-muted');
+    
+    // hidden inputを更新
+    document.getElementById('payment_method_hidden').value = selectedValue;
+    
+    // 支払い方法が選択されたらボタンを有効化
+    purchaseButton.disabled = false;
 });
 </script>
 @endpush
