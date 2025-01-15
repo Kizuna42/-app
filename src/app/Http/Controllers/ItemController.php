@@ -15,34 +15,31 @@ class ItemController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Item::with(['user', 'category'])
-            ->where('is_sold', false)
-            ->where('user_id', '!=', Auth::id());
+        $tab = $request->input('tab', 'recommend');
+        $query = Item::with(['user', 'category']);
 
-        if ($search = $request->input('search')) {
-            $query->where('name', 'like', "%{$search}%");
+        if ($tab === 'mylist') {
+            if (!Auth::check()) {
+                return view('items.index', ['items' => collect(), 'tab' => $tab]);
+            }
+            
+            $items = Auth::user()->likedItems()
+                ->with(['user', 'category'])
+                ->latest()
+                ->paginate(12);
+        } else {
+            // おすすめ商品（自分の出品以外の商品）
+            $query = $query->where('is_sold', false)
+                ->where('user_id', '!=', Auth::id());
+
+            if ($search = $request->input('search')) {
+                $query->where('name', 'like', "%{$search}%");
+            }
+
+            $items = $query->latest()->paginate(12);
         }
 
-        $items = $query->latest()->paginate(12);
-
-        return view('items.index', compact('items'));
-    }
-
-    /**
-     * マイリストを表示
-     */
-    public function mylist()
-    {
-        if (!Auth::check()) {
-            return view('items.mylist', ['items' => collect()]);
-        }
-
-        $items = Auth::user()->likedItems()
-            ->with(['user', 'category'])
-            ->latest()
-            ->paginate(12);
-
-        return view('items.mylist', compact('items'));
+        return view('items.index', compact('items', 'tab'));
     }
 
     /**
