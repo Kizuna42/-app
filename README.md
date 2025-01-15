@@ -1,37 +1,37 @@
-# Coachtechフリマ 					
+# Coachtechフリマ
 
 これはある企業が開発した独自のフリマアプリです。
 
-## アプリケーションURL				
-				
-- 開発環境：http://localhost:8081/			
-- phpMyAdmin：http://localhost:8082/				
-				
-## 環境構築				
-				
-1. リポジトリをクローン				
-```bash				
-git clone <リポジトリのURL>				
-cd <リポジトリ名>				
-```				
-2. Dockerコンテナのビルド				
-```bash				
-docker-compose up -d --build				
-```				
-3. コンテナに入る				
-```bash				
-docker-compose exec php bash				
-```				
-4. パッケージをインストール				
-```bash				
-composer install				
-```				
-5. 環境ファイルを設定				
-```bash				
+## アプリケーションURL
+
+- 開発環境：http://localhost:8081/
+- phpMyAdmin：http://localhost:8082/
+
+## 環境構築
+
+1. リポジトリをクローン
+```bash
+git clone <リポジトリのURL>
+cd <リポジトリ名>
+```
+2. Dockerコンテナのビルド
+```bash
+docker-compose up -d --build
+```
+3. コンテナに入る
+```bash
+docker-compose exec php bash
+```
+4. パッケージをインストール
+```bash
+composer install
+```
+5. 環境ファイルを設定
+```bash
 cp .env.example .env
 ```
-```bash				
-php artisan key:generate				
+```bash
+php artisan key:generate
 ```
 ※環境変数を必要に応じて変更してください
 ```
@@ -52,23 +52,23 @@ DB_PORT=3306
 ```
 
 
-6. データベースのマイグレーションとシーディング				
-```bash				
-php artisan migrate --seed				
-```						
-## 使用技術(実行環境)				
-				
-- PHP: 7.4.9				
-- Nginx: 1.21.1				
-- Laravel: 8.75				
-- MySQL: 8.0.26				
-				
-## ER図				
+6. データベースのマイグレーションとシーディング
+```bash
+php artisan migrate --seed
+```
+## 使用技術(実行環境)
+
+- PHP: 7.4.9
+- Nginx: 1.21.1
+- Laravel: 8.75
+- MySQL: 8.0.26
+
+## ER図
 
 <img width="802" alt="Screenshot 2024-12-29 at 20 27 50" src="https://github.com/user-attachments/assets/9e4e4ca2-0ec9-46be-abaa-d2c977dd3710" />
-				
-## 主要ページ				
-				
+
+## 主要ページ
+
 - 商品一覧画面（トップ画面）: /
 - 商品一覧画面（トップ画面）_マイリスト: /?tab=mylist
 - 会員登録画面: /register

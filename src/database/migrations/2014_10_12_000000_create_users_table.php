@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('profile_image')->nullable();
             $table->string('postal_code', 7)->nullable();
             $table->string('address')->nullable();
+            $table->string('building_name')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

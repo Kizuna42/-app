@@ -24,15 +24,9 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
-        if (!Auth::user()->hasVerifiedEmail()) {
-            Auth::logout();
-            return redirect()->route('login')->withErrors(['email' => 'メール認証が完了していません。']);
-        }
-
         $request->session()->regenerate();
 
-        return redirect()->intended(route('items.index'))
-            ->with('success', 'ログインしました。');
+        return redirect()->intended(route('items.index'));
     }
 
     /**
@@ -46,7 +40,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect()->route('items.index')
-            ->with('success', 'ログアウトしました。');
+        return redirect()->route('items.index');
     }
 } 

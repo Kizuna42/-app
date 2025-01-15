@@ -5,28 +5,20 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h2 class="text-center mb-4">プロフィール設定</h2>
-            <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
+
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('users.update') }}">
                 @csrf
                 @method('PUT')
-
-                <div class="d-flex align-items-center justify-content-center mb-4">
-                    @if($user->avatar)
-                        <img src="{{ asset('storage/' . $user->avatar) }}" class="img-fluid rounded-circle" alt="{{ $user->name }}" style="width: 100px; height: 100px; object-fit: cover;">
-                    @else
-                        <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
-                            <span class="h1">{{ substr($user->name, 0, 1) }}</span>
-                        </div>
-                    @endif
-                    <div class="ms-3">
-                        <label for="avatar" class="btn btn-outline-danger">画像を選択する</label>
-                        <input id="avatar" type="file" class="d-none @error('avatar') is-invalid @enderror" name="avatar" accept="image/*">
-                        @error('avatar')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                </div>
 
                 <div class="mb-3">
                     <label for="name" class="form-label">ユーザー名</label>
@@ -40,7 +32,11 @@
 
                 <div class="mb-3">
                     <label for="postal_code" class="form-label">郵便番号</label>
-                    <input id="postal_code" type="text" class="form-control @error('postal_code') is-invalid @enderror" name="postal_code" value="{{ old('postal_code', $user->postal_code) }}" required>
+                    <input id="postal_code" type="text" class="form-control @error('postal_code') is-invalid @enderror"
+                        name="postal_code"
+                        value="{{ old('postal_code', $user->postal_code) }}"
+                        placeholder="1234567"
+                        required>
                     @error('postal_code')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
