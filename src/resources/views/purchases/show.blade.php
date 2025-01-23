@@ -102,10 +102,10 @@ window.addEventListener('load', function() {
     // セレクトの変更イベント
     select.addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
-        
+
         // 選択された支払い方法を表示
         paymentDisplay.textContent = selectedOption.text;
-        
+
         // ボタンの有効化
         if (hasValidAddress && this.value) {
             button.disabled = false;
@@ -119,13 +119,13 @@ window.addEventListener('load', function() {
     // フォームの送信
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
-        
+
         const paymentMethod = select.value;
         console.log('送信開始:', paymentMethod);
 
         if (paymentMethod === 'credit') {
             button.disabled = true;
-            
+
             try {
                 const response = await fetch('{{ route('purchases.store', $item) }}', {
                     method: 'POST',
@@ -137,7 +137,7 @@ window.addEventListener('load', function() {
                 });
 
                 const data = await response.json();
-                
+
                 if (data.error) {
                     alert(data.error);
                     button.disabled = false;

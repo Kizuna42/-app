@@ -14,11 +14,21 @@ class UserController extends Controller
         $this->middleware('auth');
     }
 
-    public function show()
+    public function show(Request $request)
     {
-        $user = Auth::user()->load(['items', 'purchases.item']);
-        $items = $user->items;
-        return view('users.show', compact('user', 'items'));
+        $user = Auth::user();
+        $tab = $request->query('tab', 'sell');
+        
+        // タブに応じてアイテムを取得
+        if ($tab === 'buy') {
+            // 購入した商品を取得
+            $items = $user->purchases()->with('item')->latest()->get()->pluck('item');
+        } else {
+            // 出品した商品を取得
+            $items = $user->items()->latest()->get();
+        }
+
+        return view('users.show', compact('user', 'items', 'tab'));
     }
 
     public function edit()

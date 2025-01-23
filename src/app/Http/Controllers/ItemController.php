@@ -29,8 +29,7 @@ class ItemController extends Controller
                 ->paginate(12);
         } else {
             // おすすめ商品（自分の出品以外の商品）
-            $query = $query->where('is_sold', false)
-                ->where('user_id', '!=', Auth::id());
+            $query = $query->where('user_id', '!=', Auth::id() ?? 0);
 
             if ($search = $request->input('search')) {
                 $query->where('name', 'like', "%{$search}%");

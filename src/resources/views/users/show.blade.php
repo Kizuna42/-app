@@ -11,52 +11,50 @@
             </div>
         @endif
         <h2 class="mx-3">{{ $user->name }}</h2>
-        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-outline-danger">プロフィールを編集</a>
+        <a href="{{ route('users.edit') }}" class="btn btn-outline-danger">プロフィールを編集</a>
     </div>
 
     <ul class="nav nav-tabs mb-4">
         <li class="nav-item">
-            <a class="nav-link {{ request('tab') !== 'purchased' ? 'active text-danger' : 'text-dark' }}"
-                href="{{ route('users.show', ['user' => $user->id, 'tab' => 'listed']) }}">
+            <a class="nav-link {{ $tab !== 'buy' ? 'active text-danger' : 'text-dark' }}"
+                href="{{ route('users.show', ['tab' => 'sell']) }}">
                 出品した商品
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ request('tab') === 'purchased' ? 'active text-danger' : 'text-dark' }}"
-                href="{{ route('users.show', ['user' => $user->id, 'tab' => 'purchased']) }}">
+            <a class="nav-link {{ $tab === 'buy' ? 'active text-danger' : 'text-dark' }}"
+                href="{{ route('users.show', ['tab' => 'buy']) }}">
                 購入した商品
             </a>
         </li>
     </ul>
 
-    <div class="row">
-        @if($items->isEmpty())
-            <div class="col-12 text-center">
-                <p class="text-muted">
-                    {{ request('tab') === 'purchased' ? '購入した商品はありません。' : '出品した商品はありません。' }}
-                </p>
-            </div>
-        @else
+    @if($items->isEmpty())
+        <div class="text-center my-5">
+            <p class="text-muted">
+                {{ $tab === 'buy' ? '購入した商品はありません。' : '出品した商品はありません。' }}
+            </p>
+        </div>
+    @else
+        <div class="row">
             @foreach($items as $item)
-                <div class="col-md-3 mb-4">
-                    <a href="{{ route('items.show', $item) }}" class="text-decoration-none">
-                        <div class="card h-100">
-                            @if($item->image)
-                                <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top" alt="{{ $item->name }}" style="height: 200px; object-fit: cover;">
-                            @else
-                                <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-                                    <span>No Image</span>
+                <div class="col-6 col-md-4 col-lg-3 mb-4">
+                    <a href="{{ route('items.show', $item) }}" class="text-decoration-none text-dark">
+                        <div class="card h-100 border-0 position-relative">
+                            @if($item->is_sold)
+                                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.5); z-index: 1;">
+                                    <span class="badge bg-danger px-3 py-2 fs-5">SOLD</span>
                                 </div>
                             @endif
-                            <div class="card-body">
-                                <h5 class="card-title text-dark">{{ $item->name }}</h5>
-                                <p class="card-text text-danger">¥{{ number_format($item->price) }}</p>
+                            <img src="{{ $item->image }}" class="card-img-top" alt="{{ $item->name }}" style="object-fit: cover;">
+                            <div class="card-body px-0 py-2">
+                                <h5 class="card-title mb-1">{{ $item->name }}</h5>
                             </div>
                         </div>
                     </a>
                 </div>
             @endforeach
-        @endif
-    </div>
+        </div>
+    @endif
 </div>
 @endsection
