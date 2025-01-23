@@ -50,4 +50,4 @@ class RegisteredUserController extends Controller
         return redirect()->route('users.edit')
             ->with('success', '会員登録が完了しました。プロフィールを設定してください。');
     }
-} 
+}

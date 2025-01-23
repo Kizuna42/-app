@@ -102,18 +102,22 @@ document.getElementById('avatar').addEventListener('change', function(e) {
     if (e.target.files && e.target.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            const img = document.querySelector('.rounded-circle');
-            if (img) {
-                img.src = e.target.result;
-            } else {
-                const div = document.querySelector('.bg-secondary');
-                const newImg = document.createElement('img');
-                newImg.src = e.target.result;
-                newImg.classList.add('rounded-circle', 'mb-3');
-                newImg.style.width = '150px';
-                newImg.style.height = '150px';
-                newImg.style.objectFit = 'cover';
-                div.parentNode.replaceChild(newImg, div);
+            const container = document.querySelector('.position-relative');
+            const existingImg = container.querySelector('.rounded-circle');
+            const existingDiv = container.querySelector('.bg-secondary');
+
+            const newImg = document.createElement('img');
+            newImg.src = e.target.result;
+            newImg.alt = "プロフィール画像";
+            newImg.classList.add('rounded-circle', 'mb-3');
+            newImg.style.width = '150px';
+            newImg.style.height = '150px';
+            newImg.style.objectFit = 'cover';
+
+            if (existingImg) {
+                existingImg.replaceWith(newImg);
+            } else if (existingDiv) {
+                existingDiv.replaceWith(newImg);
             }
         }
         reader.readAsDataURL(e.target.files[0]);
