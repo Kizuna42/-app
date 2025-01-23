@@ -17,10 +17,9 @@
         <!-- 商品情報 -->
         <div class="col-md-6">
             <h1 class="product-title">{{ $item->name }}</h1>
-            <p class="brand-name">
-                {{ $item->categories->pluck('name')->join('、') }}
-            </p>
-
+            @if($item->brand_name)
+                <p class="brand-name">{{ $item->brand_name }}</p>
+            @endif
             <p class="price-text">¥{{ number_format($item->price) }}<span class="tax-included">(税込)</span></p>
 
             <div class="d-flex justify-content-start mb-4">

@@ -75,14 +75,16 @@ class ItemController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'brand_name' => 'nullable|string|max:255',
             'description' => 'required|string',
             'price' => 'required|integer|min:1',
-            'condition' => 'required|integer',
+            'condition' => 'required|in:good,fair,poor',
             'categories' => 'required|array|min:1',
             'categories.*' => 'exists:categories,id',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'name.required' => '商品名を入力してください',
+            'brand_name.max' => 'ブランド名は255文字以内で入力してください',
             'description.required' => '商品の説明を入力してください',
             'price.required' => '価格を入力してください',
             'price.integer' => '価格は整数で入力してください',
@@ -120,6 +122,7 @@ class ItemController extends Controller
             $item = new Item([
                 'user_id' => auth()->id(),
                 'name' => $validated['name'],
+                'brand_name' => $validated['brand_name'],
                 'description' => $validated['description'],
                 'price' => $validated['price'],
                 'condition' => $validated['condition'],

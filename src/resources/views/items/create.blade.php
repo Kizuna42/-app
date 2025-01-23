@@ -50,9 +50,9 @@
                 <label class="form-label required">商品の状態</label>
                 <select class="form-select" name="condition" required>
                     <option value="" selected disabled>選択してください</option>
-                    <option value="good">目立った傷や汚れなし</option>
-                    <option value="fair">やや傷や汚れあり</option>
-                    <option value="poor">状態が悪い</option>
+                    <option value="good" {{ old('condition') == 'good' ? 'selected' : '' }}>目立った傷や汚れなし</option>
+                    <option value="fair" {{ old('condition') == 'fair' ? 'selected' : '' }}>やや傷や汚れあり</option>
+                    <option value="poor" {{ old('condition') == 'poor' ? 'selected' : '' }}>状態が悪い</option>
                 </select>
                 @error('condition')
                     <div class="text-danger">{{ $message }}</div>
@@ -68,6 +68,15 @@
                 <label for="name" class="form-label required">商品名</label>
                 <input type="text" class="form-control" id="name" name="name" required value="{{ old('name') }}">
                 @error('name')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- ブランド名 -->
+            <div class="mb-4">
+                <label for="brand_name" class="form-label">ブランド名</label>
+                <input type="text" class="form-control" id="brand_name" name="brand_name" value="{{ old('brand_name') }}">
+                @error('brand_name')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
