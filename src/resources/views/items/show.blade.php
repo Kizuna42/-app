@@ -26,7 +26,7 @@
                 <div class="text-center me-4">
                     <button class="btn like-button d-block mx-auto" data-item-id="{{ $item->id }}" style="border: none; background: none; padding: 0;">
                         <i class="fa-star fa-lg {{ $item->isLikedBy(auth()->user()) ? 'fas text-warning' : 'far text-secondary' }}"></i>
-                        <span class="likes-count d-block mt-1" style="min-width: 30px">{{ $item->likes_count }}</span>
+                        <span class="likes-count d-block mt-1" style="min-width: 30px">{{ $likesCount }}</span>
                     </button>
                 </div>
                 <div class="text-center">
@@ -37,7 +37,11 @@
                 </div>
             </div>
 
-            <a href="{{ route('purchases.show', $item) }}" class="btn btn-danger w-100 mb-5">購入手続きへ</a>
+            @if(!$item->is_sold)
+                <a href="{{ route('purchases.show', $item) }}" class="btn btn-danger w-100 mb-5">購入手続きへ</a>
+            @else
+                <button class="btn btn-secondary w-100 mb-5" disabled>売り切れました</button>
+            @endif
 
             <div class="product-section mb-4">
                 <h4 class="section-title mb-3">商品説明</h4>
@@ -105,12 +109,12 @@
                         @csrf
                         <div class="mb-3">
                             <label for="comment" class="form-label">商品へのコメント</label>
-                            <textarea 
-                                class="form-control @error('content') is-invalid @enderror" 
-                                id="comment" 
-                                name="content" 
-                                rows="3" 
-                                required 
+                            <textarea
+                                class="form-control @error('content') is-invalid @enderror"
+                                id="comment"
+                                name="content"
+                                rows="3"
+                                required
                                 maxlength="255"
                             >{{ old('content') }}</textarea>
                             <div class="text-muted small mt-1">
@@ -137,6 +141,7 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // いいねボタンの処理
     const likeButton = document.querySelector('.like-button');
     if (likeButton) {
         likeButton.addEventListener('click', async function() {
@@ -181,24 +186,26 @@ document.addEventListener('DOMContentLoaded', function() {
             @endauth
         });
     }
-});
 
-// コメントフォームの文字数カウント機能
-document.addEventListener('DOMContentLoaded', function() {
+    // コメントフォームの処理
     const commentForm = document.getElementById('comment-form');
-    const textarea = document.getElementById('comment');
+    const commentTextarea = document.getElementById('comment');
     const charCount = document.getElementById('char-count');
+    const commentTotalCount = document.getElementById('comments-count');
+    // アイコン下のカウント要素を確実に取得
+    const commentCountDisplay = document.querySelector('.fa-comment').parentElement.nextElementSibling;
 
-    if (textarea && charCount) {
-        textarea.addEventListener('input', function() {
+    // 文字数カウントの処理
+    if (commentTextarea && charCount) {
+        commentTextarea.addEventListener('input', function() {
             const count = this.value.length;
             charCount.textContent = count;
 
             if (count > 255) {
-                textarea.classList.add('is-invalid');
+                this.classList.add('is-invalid');
                 charCount.classList.add('text-danger');
             } else {
-                textarea.classList.remove('is-invalid');
+                this.classList.remove('is-invalid');
                 charCount.classList.remove('text-danger');
             }
         });
@@ -227,7 +234,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // コメントリストを更新
                 const commentsList = document.getElementById('comments-list');
                 const noCommentsMessage = document.getElementById('no-comments-message');
-                const commentsCount = document.getElementById('comments-count');
 
                 // 新しいコメントのHTML
                 const newComment = `
@@ -238,6 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     ? `<img src="${data.user_avatar.startsWith('/') ? '' : '/'}storage/${data.user_avatar}" alt="${data.user_name}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">`
                                     : `<div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                                         <span>${data.user_name.charAt(0)}</span>
+                                    </div>`
                                 }
                             </div>
                             <div class="flex-grow-1">
@@ -259,12 +266,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 新しいコメントを追加
                 commentsList.insertAdjacentHTML('beforeend', newComment);
 
-                // コメント数を更新
-                commentsCount.textContent = data.comments_count;
+                // コメント数を更新（両方の表示箇所）
+                const newCount = data.comments_count;
+                if (commentTotalCount) commentTotalCount.textContent = newCount;
+                if (commentCountDisplay) commentCountDisplay.textContent = newCount;
 
                 // フォームをリセット
                 this.reset();
-                charCount.textContent = '0';
+                if (charCount) charCount.textContent = '0';
+
+                console.log('コメント数を更新しました:', newCount); // デバッグ用
 
             } catch (error) {
                 console.error('Error:', error);

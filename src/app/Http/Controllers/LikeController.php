@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LikeController extends Controller
 {
@@ -14,19 +15,15 @@ class LikeController extends Controller
 
     public function toggle(Item $item)
     {
-        $user = auth()->user();
-        
-        if ($item->isLikedBy($user)) {
-            $item->likes()->where('user_id', $user->id)->delete();
-            $action = 'unliked';
-        } else {
-            $item->likes()->create(['user_id' => $user->id]);
-            $action = 'liked';
-        }
+        $user = Auth::user();
 
+        // いいねの切り替え
+        $item->toggleLike($user);
+
+        // 更新後のいいね状態を返す
         return response()->json([
-            'likes_count' => $item->fresh()->likes_count,
-            'is_liked' => $action === 'liked'
+            'is_liked' => $item->isLikedBy($user),
+            'likes_count' => $item->likes()->count()
         ]);
     }
-} 
+}

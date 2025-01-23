@@ -77,4 +77,13 @@ class Item extends Model
     {
         return $this->likes()->count();
     }
+
+    public function toggleLike($user)
+    {
+        if ($this->isLikedBy($user)) {
+            return $this->likes()->where('user_id', $user->id)->delete();
+        } else {
+            return $this->likes()->create(['user_id' => $user->id]);
+        }
+    }
 }
