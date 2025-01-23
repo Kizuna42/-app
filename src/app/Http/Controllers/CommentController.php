@@ -31,12 +31,31 @@ class CommentController extends Controller
 
             DB::commit();
 
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'コメントを投稿しました',
+                    'content' => $comment->content,
+                    'user_name' => auth()->user()->name,
+                    'created_at' => $comment->created_at->format('Y/m/d H:i'),
+                    'comments_count' => $commentsCount
+                ]);
+            }
+
             return redirect()->back()
                 ->with('success', 'コメントを投稿しました')
                 ->with('commentsCount', $commentsCount);
 
         } catch (\Exception $e) {
             DB::rollBack();
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'コメントの投稿に失敗しました'
+                ], 500);
+            }
+
             return redirect()->back()
                 ->with('error', 'コメントの投稿に失敗しました')
                 ->withInput();
