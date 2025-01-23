@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -28,26 +29,40 @@ class UserController extends Controller
 
     public function update(Request $request)
     {
-        $user = Auth::user();
-
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'postal_code' => ['required', 'string', 'regex:/^\d{3}-?\d{4}$/'],
-            'address' => ['required', 'string', 'max:255'],
-            'building_name' => ['nullable', 'string', 'max:255'],
-        ], [
-            'name.required' => 'ユーザー名を入力してください。',
-            'postal_code.required' => '郵便番号を入力してください。',
-            'postal_code.regex' => '郵便番号は1234567または123-4567の形式で入力してください。',
-            'address.required' => '住所を入力してください。',
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'postal_code' => 'required|string|size:7',
+            'address' => 'required|string|max:255',
+            'building_name' => 'nullable|string|max:255',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $validated['postal_code'] = str_replace('-', '', $validated['postal_code']);
+        if ($request->hasFile('avatar')) {
+            // 古い画像の削除処理
+            if ($request->user()->avatar) {
+                Storage::disk('public')->delete('avatars/' . $request->user()->avatar);
+            }
 
-        $user->update($validated);
+            // 新しい画像の保存
+            $avatar = $request->file('avatar');
+            $filename = time() . '_' . uniqid() . '.' . $avatar->getClientOriginalExtension();
+            
+            // 画像を保存
+            $path = $avatar->storeAs('avatars', $filename, 'public');
+            
+            // データベースにファイル名を保存
+            $request->user()->avatar = $filename;
+        }
 
-        return redirect()->route('items.index', ['tab' => 'mylist'])
-            ->with('success', 'プロフィール情報を更新しました。マイリストをご確認ください。');
+        $request->user()->update([
+            'name' => $request->name,
+            'postal_code' => $request->postal_code,
+            'address' => $request->address,
+            'building_name' => $request->building_name,
+        ]);
+
+        return redirect()->route('users.show', $request->user()->id)
+            ->with('success', 'プロフィールを更新しました。');
     }
 
     public function purchases()

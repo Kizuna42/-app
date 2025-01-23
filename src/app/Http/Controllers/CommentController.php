@@ -32,11 +32,13 @@ class CommentController extends Controller
             DB::commit();
 
             if ($request->expectsJson()) {
+                $user = auth()->user();
                 return response()->json([
                     'success' => true,
                     'message' => 'コメントを投稿しました',
                     'content' => $comment->content,
-                    'user_name' => auth()->user()->name,
+                    'user_name' => $user->name,
+                    'user_avatar' => $user->avatar,
                     'created_at' => $comment->created_at->format('Y/m/d H:i'),
                     'comments_count' => $commentsCount
                 ]);

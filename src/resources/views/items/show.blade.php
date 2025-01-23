@@ -72,13 +72,24 @@
                     <div id="comments-list">
                         @foreach($item->comments as $comment)
                             <div class="comment-item mb-3">
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="commenter-info">
-                                        <strong>{{ $comment->user->name }}</strong>
-                                        <small class="text-muted ms-2">{{ $comment->created_at->format('Y/m/d H:i') }}</small>
+                                <div class="d-flex align-items-start">
+                                    <div class="me-2">
+                                        @if($comment->user->avatar)
+                                            <img src="{{ asset('storage/avatars/' . $comment->user->avatar) }}" alt="{{ $comment->user->name }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                        @else
+                                            <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                <span>{{ substr($comment->user->name, 0, 1) }}</span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="commenter-info">
+                                            <strong>{{ $comment->user->name }}</strong>
+                                            <small class="text-muted ms-2">{{ $comment->created_at->format('Y/m/d H:i') }}</small>
+                                        </div>
+                                        <p class="comment-text mb-0">{{ $comment->content }}</p>
                                     </div>
                                 </div>
-                                <p class="comment-text mb-0">{{ $comment->content }}</p>
                             </div>
                         @endforeach
                     </div>
@@ -216,13 +227,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 新しいコメントのHTML
                 const newComment = `
                     <div class="comment-item mb-3">
-                        <div class="d-flex align-items-center mb-2">
-                            <div class="commenter-info">
-                                <strong>${data.user_name}</strong>
-                                <small class="text-muted ms-2">${data.created_at}</small>
+                        <div class="d-flex align-items-start">
+                            <div class="me-2">
+                                ${data.user_avatar 
+                                    ? `<img src="/storage/avatars/${data.user_avatar}" alt="${data.user_name}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">`
+                                    : `<div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <span>${data.user_name.charAt(0)}</span>
+                                       </div>`
+                                }
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="commenter-info">
+                                    <strong>${data.user_name}</strong>
+                                    <small class="text-muted ms-2">${data.created_at}</small>
+                                </div>
+                                <p class="comment-text mb-0">${data.content}</p>
                             </div>
                         </div>
-                        <p class="comment-text mb-0">${data.content}</p>
                     </div>
                 `;
 

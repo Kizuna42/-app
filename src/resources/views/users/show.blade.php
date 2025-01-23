@@ -4,7 +4,7 @@
 <div class="container mt-5">
     <div class="d-flex align-items-center justify-content-center mb-4">
         @if($user->avatar)
-            <img src="{{ asset('storage/' . $user->avatar) }}" class="img-fluid rounded-circle" alt="{{ $user->name }}" style="width: 100px; height: 100px; object-fit: cover;">
+            <img src="{{ asset('storage/avatars/' . $user->avatar) }}" class="img-fluid rounded-circle" alt="{{ $user->name }}" style="width: 100px; height: 100px; object-fit: cover;">
         @else
             <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
                 <span class="h1">{{ substr($user->name, 0, 1) }}</span>

@@ -16,9 +16,31 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('users.update') }}">
+            <form method="POST" action="{{ route('users.update') }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+
+                <!-- プロフィール画像 -->
+                <div class="mb-4 d-flex align-items-center">
+                    <div class="position-relative d-inline-block">
+                        @if($user->avatar)
+                            <img src="{{ asset('storage/avatars/' . $user->avatar) }}" alt="プロフィール画像" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                        @else
+                            <div class="bg-secondary rounded-circle mb-3" style="width: 150px; height: 150px;"></div>
+                        @endif
+                    </div>
+                    <div class="ms-5"> <!-- ml-4からms-5に変更してマージンを増やす -->
+                        <label for="avatar" class="btn btn-outline-danger mb-0">
+                            画像を選択する
+                        </label>
+                        <input type="file" id="avatar" name="avatar" class="d-none" accept="image/*">
+                    </div>
+                    @error('avatar')
+                        <span class="text-danger d-block">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
 
                 <div class="mb-3">
                     <label for="name" class="form-label">ユーザー名</label>
@@ -73,4 +95,30 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+document.getElementById('avatar').addEventListener('change', function(e) {
+    if (e.target.files && e.target.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.querySelector('.rounded-circle');
+            if (img) {
+                img.src = e.target.result;
+            } else {
+                const div = document.querySelector('.bg-secondary');
+                const newImg = document.createElement('img');
+                newImg.src = e.target.result;
+                newImg.classList.add('rounded-circle', 'mb-3');
+                newImg.style.width = '150px';
+                newImg.style.height = '150px';
+                newImg.style.objectFit = 'cover';
+                div.parentNode.replaceChild(newImg, div);
+            }
+        }
+        reader.readAsDataURL(e.target.files[0]);
+    }
+});
+</script>
+@endpush
 @endsection
