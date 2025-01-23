@@ -16,11 +16,11 @@ class ItemSeeder extends Seeder
     {
         $user = User::first() ?? User::factory()->create();
 
-        // カテゴリーIDを取得
-        $fashionId = Category::where('name', 'ファッション')->first()->id;
-        $electronicsId = Category::where('name', '家電')->first()->id;
-        $interiorId = Category::where('name', 'インテリア・住まい')->first()->id;
-        $otherId = Category::where('name', 'その他')->first()->id;
+        // カテゴリーを取得
+        $fashion = Category::where('name', 'ファッション')->first();
+        $electronics = Category::where('name', '家電')->first();
+        $interior = Category::where('name', 'インテリア・住まい')->first();
+        $other = Category::where('name', 'その他')->first();
 
         $items = [
             [
@@ -29,7 +29,7 @@ class ItemSeeder extends Seeder
                 'description' => 'スタイリッシュなデザインのメンズ腕時計',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Armani+Mens+Clock.jpg',
                 'condition' => 'good',
-                'category_id' => $fashionId,
+                'categories' => [$fashion->id],
             ],
             [
                 'name' => 'HDD',
@@ -37,7 +37,7 @@ class ItemSeeder extends Seeder
                 'description' => '高速で信頼性の高いハードディスク',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/HDD+Hard+Disk.jpg',
                 'condition' => 'good',
-                'category_id' => $electronicsId,
+                'categories' => [$electronics->id],
             ],
             [
                 'name' => '玉ねぎ3束',
@@ -45,7 +45,7 @@ class ItemSeeder extends Seeder
                 'description' => '新鮮な玉ねぎ3束のセット',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/iLoveIMG+d.jpg',
                 'condition' => 'fair',
-                'category_id' => $otherId,
+                'categories' => [$other->id],
             ],
             [
                 'name' => '革靴',
@@ -53,7 +53,7 @@ class ItemSeeder extends Seeder
                 'description' => 'クラシックなデザインの革靴',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Leather+Shoes+Product+Photo.jpg',
                 'condition' => 'poor',
-                'category_id' => $fashionId,
+                'categories' => [$fashion->id],
             ],
             [
                 'name' => 'ノートPC',
@@ -61,7 +61,7 @@ class ItemSeeder extends Seeder
                 'description' => '高性能なノートパソコン',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Living+Room+Laptop.jpg',
                 'condition' => 'good',
-                'category_id' => $electronicsId,
+                'categories' => [$electronics->id],
             ],
             [
                 'name' => 'マイク',
@@ -69,7 +69,7 @@ class ItemSeeder extends Seeder
                 'description' => '高音質のレコーディング用マイク',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Music+Mic+4632231.jpg',
                 'condition' => 'good',
-                'category_id' => $electronicsId,
+                'categories' => [$electronics->id],
             ],
             [
                 'name' => 'ショルダーバッグ',
@@ -77,7 +77,7 @@ class ItemSeeder extends Seeder
                 'description' => 'おしゃれなショルダーバッグ',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Purse+fashion+pocket.jpg',
                 'condition' => 'fair',
-                'category_id' => $fashionId,
+                'categories' => [$fashion->id],
             ],
             [
                 'name' => 'タンブラー',
@@ -85,7 +85,7 @@ class ItemSeeder extends Seeder
                 'description' => '使いやすいタンブラー',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Tumbler+souvenir.jpg',
                 'condition' => 'poor',
-                'category_id' => $interiorId,
+                'categories' => [$interior->id],
             ],
             [
                 'name' => 'コーヒーミル',
@@ -93,7 +93,7 @@ class ItemSeeder extends Seeder
                 'description' => '手動のコーヒーミル',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Waitress+with+Coffee+Grinder.jpg',
                 'condition' => 'good',
-                'category_id' => $interiorId,
+                'categories' => [$interior->id],
             ],
             [
                 'name' => 'メイクセット',
@@ -101,21 +101,26 @@ class ItemSeeder extends Seeder
                 'description' => '便利なメイクアップセット',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/%E5%A4%96%E5%87%BA%E3%83%A1%E3%82%A4%E3%82%AF%E3%82%A2%E3%83%83%E3%83%95%E3%82%9A%E3%82%BB%E3%83%83%E3%83%88.jpg',
                 'condition' => 'good',
-                'category_id' => $otherId,
+                'categories' => [$other->id],
             ],
         ];
 
-        foreach ($items as $item) {
-            Item::create([
+        foreach ($items as $itemData) {
+            $categories = $itemData['categories'];
+            unset($itemData['categories']);
+
+            $item = Item::create([
                 'user_id' => $user->id,
-                'name' => $item['name'],
-                'price' => $item['price'],
-                'description' => $item['description'],
-                'image' => $item['image'],
-                'condition' => $item['condition'],
-                'category_id' => $item['category_id'],
+                'name' => $itemData['name'],
+                'price' => $itemData['price'],
+                'description' => $itemData['description'],
+                'image' => $itemData['image'],
+                'condition' => $itemData['condition'],
                 'is_sold' => false,
             ]);
+
+            // カテゴリーを関連付け
+            $item->categories()->sync($categories);
         }
     }
 }

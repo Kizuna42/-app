@@ -19,9 +19,18 @@ return new class extends Migration
             $table->text('description');
             $table->string('image');
             $table->string('condition');
-            $table->foreignId('category_id')->constrained('categories');
             $table->boolean('is_sold')->default(false);
             $table->timestamps();
+        });
+
+        // 中間テーブルの作成
+        Schema::create('item_category', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('item_id')->constrained()->onDelete('cascade');
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
+
+            $table->unique(['item_id', 'category_id']);
         });
     }
 
@@ -30,6 +39,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('item_category');
         Schema::dropIfExists('items');
     }
-}; 
+};
