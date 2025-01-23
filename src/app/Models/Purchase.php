@@ -13,10 +13,12 @@ class Purchase extends Model
         'user_id',
         'item_id',
         'status',
+        'payment_method',
         'postal_code',
         'prefecture',
         'city',
         'address',
+        'building_name',
         'phone',
         'tracking_number',
     ];

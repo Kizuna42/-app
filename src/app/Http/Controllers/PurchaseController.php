@@ -40,31 +40,63 @@ class PurchaseController extends Controller
                 ->with('error', 'この商品は既に売却済みです。');
         }
 
+        $user = Auth::user();
+        if (!$user->postal_code || !$user->address) {
+            return redirect()->route('purchases.address.edit', $item)
+                ->with('error', '配送先住所を登録してください。');
+        }
+
         $validated = $request->validate([
-            'postal_code' => 'required|string|size:7',
-            'prefecture' => 'required|string',
-            'city' => 'required|string',
-            'address' => 'required|string',
-            'phone' => 'required|string|regex:/^[0-9]{10,11}$/',
+            'payment_method' => 'required|in:convenience,credit',
         ]);
 
-        DB::transaction(function () use ($item, $validated) {
+        // カード支払いの場合はStripe決済を実行
+        if ($validated['payment_method'] === 'credit') {
+            try {
+                Stripe::setApiKey(config('services.stripe.secret'));
+                $session = Session::create([
+                    'payment_method_types' => ['card'],
+                    'line_items' => [[
+                        'price_data' => [
+                            'currency' => 'jpy',
+                            'product_data' => [
+                                'name' => $item->name,
+                            ],
+                            'unit_amount' => $item->price,
+                        ],
+                        'quantity' => 1,
+                    ]],
+                    'mode' => 'payment',
+                    'success_url' => route('purchases.success', $item),
+                    'cancel_url' => route('purchases.show', $item),
+                ]);
+
+                return response()->json(['sessionId' => $session->id]);
+            } catch (\Exception $e) {
+                return response()->json(['error' => '決済処理に失敗しました。'], 500);
+            }
+        }
+
+        // コンビニ支払いの場合は購入情報を保存
+        DB::transaction(function () use ($item, $validated, $user) {
             $item->update(['is_sold' => true]);
 
             Purchase::create([
                 'user_id' => Auth::id(),
                 'item_id' => $item->id,
+                'payment_method' => $validated['payment_method'],
                 'status' => 'pending',
-                'postal_code' => $validated['postal_code'],
-                'prefecture' => $validated['prefecture'],
-                'city' => $validated['city'],
-                'address' => $validated['address'],
-                'phone' => $validated['phone'],
+                'postal_code' => $user->postal_code,
+                'prefecture' => $user->prefecture,
+                'city' => $user->city,
+                'address' => $user->address,
+                'building_name' => $user->building_name,
+                'phone' => $user->phone,
             ]);
         });
 
         return redirect()->route('users.purchases')
-            ->with('success', '商品を購入しました。');
+            ->with('success', '商品の購入が完了しました。');
     }
 
     /**
