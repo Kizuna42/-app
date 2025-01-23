@@ -40,11 +40,6 @@
                             <img src="{{ $item->image }}" class="card-img-top" alt="{{ $item->name }}" style="object-fit: cover;">
                             <div class="card-body px-0 py-2">
                                 <h5 class="card-title mb-0">{{ $item->name }}</h5>
-                                @if($item->categories->isNotEmpty())
-                                    <p class="text-muted small mb-0">
-                                        {{ $item->categories->pluck('name')->join(', ') }}
-                                    </p>
-                                @endif
                             </div>
                         </div>
                     </a>

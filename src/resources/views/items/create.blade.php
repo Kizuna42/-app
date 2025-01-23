@@ -27,10 +27,16 @@
             <div class="mb-4">
                 <label class="form-label required">カテゴリー</label>
                 <div class="category-buttons">
-                    @foreach(['ファッション', '家電', 'インテリア', 'レディース', 'メンズ', 'コスメ', '本', 'ゲーム', 'スポーツ', 'キッチン', 'ハンドメイド', 'アクセサリー', 'おもちゃ', 'ベビー・キッズ'] as $category)
+                    @foreach($categories as $category)
                         <div class="form-check form-check-inline mb-2">
-                            <input class="form-check-input" type="checkbox" name="categories[]" value="{{ $category }}" id="category_{{ $loop->index }}">
-                            <label class="form-check-label category-label" for="category_{{ $loop->index }}">{{ $category }}</label>
+                            <input class="form-check-input" type="checkbox" 
+                                name="categories[]" 
+                                value="{{ $category->id }}" 
+                                id="category_{{ $category->id }}"
+                                {{ in_array($category->id, old('categories', [])) ? 'checked' : '' }}>
+                            <label class="form-check-label category-label" for="category_{{ $category->id }}">
+                                {{ $category->name }}
+                            </label>
                         </div>
                     @endforeach
                 </div>

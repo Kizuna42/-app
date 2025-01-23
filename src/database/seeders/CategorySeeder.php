@@ -14,38 +14,27 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            'ファッション' => [
-                'メンズ',
-                'レディース',
-                'キッズ',
-            ],
-            '家電' => [
-                'スマートフォン',
-                'パソコン',
-                'オーディオ',
-                'カメラ',
-            ],
-            'インテリア・住まい' => [
-                '家具',
-                'キッチン',
-                '照明',
-            ],
-            'その他' => [],
+            'ファッション',
+            '家電',
+            'インテリア',
+            'レディース',
+            'メンズ',
+            'コスメ',
+            '本',
+            'ゲーム',
+            'スポーツ',
+            'キッチン',
+            'ハンドメイド',
+            'アクセサリー',
+            'おもちゃ',
+            'ベビー・キッズ',
         ];
 
-        foreach ($categories as $parentName => $children) {
-            $parent = Category::create([
-                'name' => $parentName,
-                'slug' => Str::slug($parentName),
+        foreach ($categories as $categoryName) {
+            Category::create([
+                'name' => $categoryName,
+                'slug' => Str::slug($categoryName),
             ]);
-
-            foreach ($children as $childName) {
-                Category::create([
-                    'name' => $childName,
-                    'slug' => Str::slug($childName),
-                    'parent_id' => $parent->id,
-                ]);
-            }
         }
     }
 } 

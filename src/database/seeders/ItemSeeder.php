@@ -19,8 +19,11 @@ class ItemSeeder extends Seeder
         // カテゴリーを取得
         $fashion = Category::where('name', 'ファッション')->first();
         $electronics = Category::where('name', '家電')->first();
-        $interior = Category::where('name', 'インテリア・住まい')->first();
-        $other = Category::where('name', 'その他')->first();
+        $interior = Category::where('name', 'インテリア')->first();
+        $mens = Category::where('name', 'メンズ')->first();
+        $ladies = Category::where('name', 'レディース')->first();
+        $accessory = Category::where('name', 'アクセサリー')->first();
+        $kitchen = Category::where('name', 'キッチン')->first();
 
         $items = [
             [
@@ -29,7 +32,7 @@ class ItemSeeder extends Seeder
                 'description' => 'スタイリッシュなデザインのメンズ腕時計',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Armani+Mens+Clock.jpg',
                 'condition' => 'good',
-                'categories' => [$fashion->id],
+                'categories' => [$fashion->id, $mens->id, $accessory->id],
             ],
             [
                 'name' => 'HDD',
@@ -45,7 +48,7 @@ class ItemSeeder extends Seeder
                 'description' => '新鮮な玉ねぎ3束のセット',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/iLoveIMG+d.jpg',
                 'condition' => 'fair',
-                'categories' => [$other->id],
+                'categories' => [$kitchen->id],
             ],
             [
                 'name' => '革靴',
@@ -53,7 +56,7 @@ class ItemSeeder extends Seeder
                 'description' => 'クラシックなデザインの革靴',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Leather+Shoes+Product+Photo.jpg',
                 'condition' => 'poor',
-                'categories' => [$fashion->id],
+                'categories' => [$fashion->id, $mens->id],
             ],
             [
                 'name' => 'ノートPC',
@@ -77,7 +80,7 @@ class ItemSeeder extends Seeder
                 'description' => 'おしゃれなショルダーバッグ',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Purse+fashion+pocket.jpg',
                 'condition' => 'fair',
-                'categories' => [$fashion->id],
+                'categories' => [$fashion->id, $ladies->id, $accessory->id],
             ],
             [
                 'name' => 'タンブラー',
@@ -101,7 +104,7 @@ class ItemSeeder extends Seeder
                 'description' => '便利なメイクアップセット',
                 'image' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/%E5%A4%96%E5%87%BA%E3%83%A1%E3%82%A4%E3%82%AF%E3%82%A2%E3%83%83%E3%83%95%E3%82%9A%E3%82%BB%E3%83%83%E3%83%88.jpg',
                 'condition' => 'good',
-                'categories' => [$other->id],
+                'categories' => [$kitchen->id, $ladies->id, $accessory->id],
             ],
         ];
 
@@ -120,7 +123,7 @@ class ItemSeeder extends Seeder
             ]);
 
             // カテゴリーを関連付け
-            $item->categories()->sync($categories);
+            $item->categories()->attach($categories);
         }
     }
 }
