@@ -68,7 +68,7 @@ php artisan migrate --seed
 
 ## ER図
 
-<img width="802" alt="Screenshot 2024-12-29 at 20 27 50" src="https://github.com/user-attachments/assets/9e4e4ca2-0ec9-46be-abaa-d2c977dd3710" />
+<img width="802" alt="Screenshot 2024-12-29 at 20 27 50" src="index.drawio.png" />
 
 ## 主要ページ
 
