@@ -104,7 +104,7 @@
         font-size: 0.9rem;
     }
     .form-select {
-        font-size: 0.9rem !important;
+        font-size: 0.9rem;
     }
     .btn-lg {
         font-size: 1rem;

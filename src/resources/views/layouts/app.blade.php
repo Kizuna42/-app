@@ -17,7 +17,7 @@
                 margin: 0 0.5rem;
             }
             .navbar .search-input {
-                width: 100% !important;
+                width: 100%;
                 font-size: 0.9rem;
                 padding: 6px 12px;
             }
@@ -25,7 +25,7 @@
                 height: 26px;
             }
             .nav-link {
-                padding: 0.5rem 0.4rem !important;
+                padding: 0.5rem 0.4rem;
                 font-size: 0.85rem;
                 white-space: nowrap;
             }

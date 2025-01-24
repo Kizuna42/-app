@@ -37,4 +37,4 @@ class PurchaseRequest extends FormRequest
             'delivery_address_id.exists' => '正しい配送先を選択してください',
         ];
     }
-} 
+}

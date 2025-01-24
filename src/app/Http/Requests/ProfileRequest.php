@@ -34,4 +34,4 @@ class ProfileRequest extends FormRequest
             'avatar.mimes' => 'プロフィール画像はjpegまたはpng形式のファイルを選択してください',
         ];
     }
-} 
+}

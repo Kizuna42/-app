@@ -64,4 +64,4 @@ class ExhibitionRequest extends FormRequest
             'poor' => '傷や汚れあり',
         ];
     }
-} 
+}

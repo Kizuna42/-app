@@ -43,4 +43,4 @@ class AddressRequest extends FormRequest
             'building.max' => '建物名は255文字以内で入力してください',
         ];
     }
-} 
+}

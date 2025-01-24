@@ -67,4 +67,4 @@ class Purchase extends Model
     {
         return $query->where('status', 'canceled');
     }
-} 
+}

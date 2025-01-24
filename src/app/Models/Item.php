@@ -43,6 +43,11 @@ class Item extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * 商品に関連するカテゴリーを取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'item_category');
