@@ -32,11 +32,11 @@
             @endif
         </div>
     @else
-        <div class="row">
+        <div class="row g-4">
             @foreach($items as $item)
-                <div class="col-6 col-md-4 col-lg-3 mb-4">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <a href="{{ route('items.show', $item) }}" class="text-decoration-none text-dark">
-                        <div class="card h-100 border-0 position-relative">
+                        <div class="card h-100 border-0 position-relative item-card">
                             @if($item->is_sold)
                                 <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.5); z-index: 1;">
                                     <span class="badge bg-danger px-3 py-2 fs-5">SOLD</span>
@@ -46,7 +46,7 @@
                                 <img src="{{ $item->image }}" class="card-img-top position-absolute top-0 start-0 w-100 h-100" alt="{{ $item->name }}" style="object-fit: cover;">
                             </div>
                             <div class="card-body px-0 py-2">
-                                <h5 class="card-title mb-1">{{ $item->name }}</h5>
+                                <h5 class="card-title mb-1 text-truncate">{{ $item->name }}</h5>
                             </div>
                         </div>
                     </a>
@@ -59,4 +59,29 @@
         </div>
     @endif
 </div>
+
+<style>
+@media (min-width: 768px) and (max-width: 850px) {
+    .container {
+        max-width: 720px;
+    }
+    .item-card .card-title {
+        font-size: 0.9rem;
+    }
+}
+
+@media (min-width: 1400px) and (max-width: 1540px) {
+    .container {
+        max-width: 1320px;
+    }
+}
+
+.item-card {
+    transition: transform 0.2s;
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+}
+</style>
 @endsection

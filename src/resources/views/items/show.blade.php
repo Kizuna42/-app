@@ -2,25 +2,27 @@
 
 @section('content')
 <div class="container mt-4">
-    <div class="row">
+    <div class="row g-4">
         <!-- 商品画像 -->
-        <div class="col-md-6">
-            @if($item->image)
-                <img src="{{ $item->image }}" class="img-fluid" alt="{{ $item->name }}">
-            @else
-                <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 400px;">
-                    <span>商品画像</span>
-                </div>
-            @endif
+        <div class="col-12 col-md-6">
+            <div class="image-wrapper position-relative" style="padding-top: 100%;">
+                @if($item->image)
+                    <img src="{{ $item->image }}" class="position-absolute top-0 start-0 w-100 h-100" alt="{{ $item->name }}" style="object-fit: cover;">
+                @else
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-secondary text-white d-flex align-items-center justify-content-center">
+                        <span>商品画像</span>
+                    </div>
+                @endif
+            </div>
         </div>
 
         <!-- 商品情報 -->
-        <div class="col-md-6">
-            <h1 class="product-title">{{ $item->name }}</h1>
+        <div class="col-12 col-md-6">
+            <h1 class="product-title h2 mb-3">{{ $item->name }}</h1>
             @if($item->brand_name)
-                <p class="brand-name">{{ $item->brand_name }}</p>
+                <p class="brand-name text-muted mb-2">{{ $item->brand_name }}</p>
             @endif
-            <p class="price-text">¥{{ number_format($item->price) }}<span class="tax-included">(税込)</span></p>
+            <p class="price-text h3 mb-4">¥{{ number_format($item->price) }}<span class="tax-included ms-2 fs-6">(税込)</span></p>
 
             <div class="d-flex justify-content-start mb-4">
                 <div class="text-center me-4">
@@ -50,12 +52,12 @@
 
             <div class="product-section mb-4">
                 <h4 class="section-title mb-3">商品の情報</h4>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <span class="label">カテゴリー</span>
-                        <div>
+                <div class="info-list">
+                    <div class="info-item mb-3">
+                        <span class="label d-block mb-2">カテゴリー</span>
+                        <div class="d-flex flex-wrap gap-2">
                             @foreach($item->categories as $category)
-                                <span class="badge bg-light text-dark me-1">
+                                <span class="badge bg-light text-dark">
                                     @if($category->parent)
                                         {{ $category->parent->name }} > {{ $category->name }}
                                     @else
@@ -66,7 +68,7 @@
                         </div>
                     </div>
                     <div class="info-item">
-                        <span class="label">商品の状態</span>
+                        <span class="label d-block mb-2">商品の状態</span>
                         <span class="badge bg-light text-dark">{{ $item->condition_name }}</span>
                     </div>
                 </div>
@@ -137,6 +139,43 @@
         </div>
     </div>
 </div>
+
+<style>
+@media (min-width: 768px) and (max-width: 850px) {
+    .container {
+        max-width: 720px;
+    }
+    .product-title {
+        font-size: 1.5rem;
+    }
+    .price-text {
+        font-size: 1.3rem;
+    }
+}
+
+@media (min-width: 1400px) and (max-width: 1540px) {
+    .container {
+        max-width: 1320px;
+    }
+}
+
+.section-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.info-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-item .label {
+    font-weight: 500;
+    color: #666;
+}
+</style>
 
 @push('scripts')
 <script>

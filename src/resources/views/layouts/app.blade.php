@@ -10,6 +10,68 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <style>
+        @media (min-width: 768px) and (max-width: 850px) {
+            .navbar .search-form {
+                width: 250px;
+                margin: 0 1rem;
+            }
+            .navbar .search-input {
+                width: 100% !important;
+                font-size: 0.9rem;
+            }
+            .navbar-brand img {
+                height: 28px;
+            }
+            .nav-link {
+                padding: 0.5rem 0.5rem !important;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+            .navbar .btn-light {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (min-width: 1400px) and (max-width: 1540px) {
+            .navbar .search-form {
+                width: 450px;
+            }
+        }
+
+        .navbar .search-form {
+            position: relative;
+            margin: 0 2rem;
+        }
+
+        .navbar .search-input {
+            border: none;
+            padding: 8px 16px;
+            width: 100%;
+        }
+
+        .navbar .nav-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .btn-light {
+            border-radius: 20px;
+            padding: 6px 20px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 767px) {
+            .navbar .search-form {
+                margin: 1rem 0;
+                width: 100%;
+            }
+            .navbar-nav {
+                margin-top: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -18,42 +80,53 @@
                 <a class="navbar-brand" href="{{ url('/') }}">
                     <img src="{{ asset('images/Free Market App Logo.svg') }}" alt="Logo" height="32">
                 </a>
-                @if (!request()->is('login', 'register'))
-                    <form class="d-flex mx-auto" method="GET" action="{{ route('items.index') }}">
-                        <input type="search" name="search" placeholder="なにをお探しですか？" aria-label="Search" value="{{ request('search') }}" style="padding: 8px; width: 450px;">
-                        @if(request('tab'))
-                            <input type="hidden" name="tab" value="{{ request('tab') }}">
-                        @endif
-                    </form>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                    <ul class="navbar-nav ms-auto">
-                        @auth
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault();
-                                        document.getElementById('logout-form').submit();">
-                                    ログアウト
-                                </a>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="{{ route('users.show') }}">マイページ</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-light" href="{{ route('items.create') }}">出品</a>
-                            </li>
-                        @else
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="{{ route('login') }}">ログイン</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="{{ route('register') }}">新規登録</a>
-                            </li>
-                        @endauth
-                    </ul>
-                @endif
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    @if (!request()->is('login', 'register'))
+                        <form class="search-form mx-auto" method="GET" action="{{ route('items.index') }}">
+                            <input type="search"
+                                name="search"
+                                class="search-input"
+                                placeholder="なにをお探しですか？"
+                                aria-label="Search"
+                                value="{{ request('search') }}">
+                            @if(request('tab'))
+                                <input type="hidden" name="tab" value="{{ request('tab') }}">
+                            @endif
+                        </form>
+
+                        <ul class="navbar-nav align-items-center">
+                            @auth
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="{{ route('users.show') }}">マイページ</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault();
+                                            document.getElementById('logout-form').submit();">
+                                        ログアウト
+                                    </a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
+                                </li>
+                                <li class="nav-item ms-2">
+                                    <a class="btn btn-light" href="{{ route('items.create') }}">出品</a>
+                                </li>
+                            @else
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="{{ route('login') }}">ログイン</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="{{ route('register') }}">新規登録</a>
+                                </li>
+                            @endauth
+                        </ul>
+                    @endif
+                </div>
             </div>
         </nav>
 
