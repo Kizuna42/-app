@@ -16,8 +16,10 @@
                     <label for="image" class="btn btn-outline-danger mb-0">画像を選択する</label>
                 </div>
                 <div id="preview-area" class="mt-2 d-none">
-                    <img id="preview-image" src="" alt="プレビュー" style="max-width: 300px; max-height: 300px;" class="mb-3">
-                    <div>
+                    <div class="image-wrapper position-relative mx-auto" style="width: 300px; padding-top: 300px;">
+                        <img id="preview-image" src="" alt="プレビュー" class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover;">
+                    </div>
+                    <div class="mt-3">
                         <button type="button" class="btn btn-outline-secondary btn-sm" id="change-image">画像を変更する</button>
                     </div>
                 </div>
