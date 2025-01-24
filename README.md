@@ -50,9 +50,12 @@ DB_PORT=3306
 
 // 後略
 ```
+6. シンボリックリンクの作成
+```bash
+php artisan storage:link
+```
 
-
-6. データベースのマイグレーションとシーディング
+7. データベースのマイグレーションとシーディング
 ```bash
 php artisan migrate --seed
 ```
