@@ -13,24 +13,29 @@
     <style>
         @media (min-width: 768px) and (max-width: 850px) {
             .navbar .search-form {
-                width: 250px;
-                margin: 0 1rem;
+                width: 200px;
+                margin: 0 0.5rem;
             }
             .navbar .search-input {
                 width: 100% !important;
                 font-size: 0.9rem;
+                padding: 6px 12px;
             }
             .navbar-brand img {
-                height: 28px;
+                height: 26px;
             }
             .nav-link {
-                padding: 0.5rem 0.5rem !important;
-                font-size: 0.9rem;
+                padding: 0.5rem 0.4rem !important;
+                font-size: 0.85rem;
                 white-space: nowrap;
             }
             .navbar .btn-light {
-                padding: 6px 12px;
-                font-size: 0.9rem;
+                padding: 4px 10px;
+                font-size: 0.85rem;
+            }
+            .container {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
             }
         }
 
@@ -57,7 +62,6 @@
         }
 
         .navbar .btn-light {
-            border-radius: 20px;
             padding: 6px 20px;
             font-weight: 500;
         }
