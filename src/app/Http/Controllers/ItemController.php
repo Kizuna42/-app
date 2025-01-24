@@ -17,21 +17,27 @@ class ItemController extends Controller
     {
         $tab = $request->input('tab', 'recommend');
         $query = Item::with(['user', 'categories']);
+        $search = $request->input('search');
 
         if ($tab === 'mylist') {
             if (!Auth::check()) {
                 return view('items.index', ['items' => collect(), 'tab' => $tab]);
             }
 
-            $items = Auth::user()->likedItems()
-                ->with(['user', 'categories'])
-                ->latest()
+            $query = Auth::user()->likedItems()
+                ->with(['user', 'categories']);
+
+            if ($search) {
+                $query->where('name', 'like', "%{$search}%");
+            }
+
+            $items = $query->latest()
                 ->paginate(12);
         } else {
             // おすすめ商品（自分の出品以外の商品）
             $query = $query->where('user_id', '!=', Auth::id() ?? 0);
 
-            if ($search = $request->input('search')) {
+            if ($search) {
                 $query->where('name', 'like', "%{$search}%");
             }
 

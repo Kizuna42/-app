@@ -91,7 +91,6 @@ class PurchaseController extends Controller
                 'city' => $user->city,
                 'address' => $user->address,
                 'building_name' => $user->building_name,
-                'phone' => $user->phone,
             ]);
         });
 

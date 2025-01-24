@@ -15,11 +15,8 @@ class Purchase extends Model
         'status',
         'payment_method',
         'postal_code',
-        'prefecture',
-        'city',
         'address',
         'building_name',
-        'phone',
         'tracking_number',
     ];
 
@@ -44,10 +41,8 @@ class Purchase extends Model
     public function getFullAddressAttribute()
     {
         return sprintf(
-            '〒%s %s%s%s',
+            '〒%s %s',
             $this->postal_code,
-            $this->prefecture,
-            $this->city,
             $this->address
         );
     }

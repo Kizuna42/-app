@@ -28,7 +28,7 @@ class CopyItemImages extends Command
         foreach ($images as $url) {
             $filename = basename($url);
             $contents = file_get_contents($url);
-            
+
             if ($contents === false) {
                 $this->error("Failed to download: {$url}");
                 continue;
@@ -44,4 +44,4 @@ class CopyItemImages extends Command
 
         $this->info('All images have been copied.');
     }
-} 
+}

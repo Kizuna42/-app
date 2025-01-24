@@ -21,8 +21,11 @@
                 @if (!request()->is('login', 'register'))
                     <form class="d-flex mx-auto" method="GET" action="{{ route('items.index') }}">
                         <input type="search" name="search" placeholder="なにをお探しですか？" aria-label="Search" value="{{ request('search') }}" style="padding: 8px; width: 450px;">
+                        @if(request('tab'))
+                            <input type="hidden" name="tab" value="{{ request('tab') }}">
+                        @endif
                     </form>
-                    
+
                     <ul class="navbar-nav ms-auto">
                         @auth
                             <li class="nav-item">

@@ -25,7 +25,7 @@
                     <p>まだいいねした商品がありません。</p>
                 @else
                     <p>マイリストを見るにはログインが必要です。</p>
-                    <a href="{{ route('login') }}" class="btn btn-primary">ログイン</a>
+                    <a href="{{ route('login') }}" class="btn btn-primary text-white">ログイン</a>
                 @endauth
             @else
                 <p>商品が見つかりませんでした。</p>
