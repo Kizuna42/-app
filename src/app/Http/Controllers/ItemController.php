@@ -34,8 +34,10 @@ class ItemController extends Controller
             $items = $query->latest()
                 ->paginate(12);
         } else {
-            // おすすめ商品（自分の出品以外の商品）
-            $query = $query->where('user_id', '!=', Auth::id() ?? 0);
+            // 自分の出品以外の商品を表示
+            if (Auth::check()) {
+                $query->where('user_id', '!=', Auth::id());
+            }
 
             if ($search) {
                 $query->where('name', 'like', "%{$search}%");
@@ -111,14 +113,14 @@ class ItemController extends Controller
                 $image = $request->file('image');
                 $filename = time() . '_' . $image->getClientOriginalName();
 
-                // 画像を保存
-                $path = $image->storeAs('public/items', $filename);
+                // 画像をstorage/app/public/itemsに保存
+                $path = Storage::disk('public')->putFileAs('items', $image, $filename);
                 if (!$path) {
                     throw new \Exception('画像の保存に失敗しました');
                 }
 
-                // public/storageからのパスを設定
-                $imageUrl = 'storage/items/' . $filename;
+                // 画像のURLパスを設定
+                $imageUrl = '/storage/' . $path;
             } else {
                 throw new \Exception('画像ファイルのアップロードに失敗しました。');
             }
@@ -151,8 +153,8 @@ class ItemController extends Controller
             \Log::error($e->getTraceAsString());
 
             // アップロードした画像を削除
-            if (isset($filename)) {
-                Storage::delete('public/items/' . $filename);
+            if (isset($path)) {
+                Storage::disk('public')->delete($path);
             }
 
             return back()

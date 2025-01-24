@@ -12,7 +12,15 @@
             <h3 class="section-title mb-3">商品画像</h3>
             <div class="image-upload-area border rounded p-4 text-center">
                 <input type="file" name="image" id="image" class="d-none" accept="image/*" required>
-                <label for="image" class="btn btn-outline-danger mb-0">画像を選択する</label>
+                <div id="upload-button-area">
+                    <label for="image" class="btn btn-outline-danger mb-0">画像を選択する</label>
+                </div>
+                <div id="preview-area" class="mt-2 d-none">
+                    <img id="preview-image" src="" alt="プレビュー" style="max-width: 300px; max-height: 300px;" class="mb-3">
+                    <div>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="change-image">画像を変更する</button>
+                    </div>
+                </div>
                 @error('image')
                     <div class="text-danger mt-2">{{ $message }}</div>
                 @enderror
@@ -29,9 +37,9 @@
                 <div class="category-buttons">
                     @foreach($categories as $category)
                         <div class="form-check form-check-inline mb-2">
-                            <input class="form-check-input" type="checkbox" 
-                                name="categories[]" 
-                                value="{{ $category->id }}" 
+                            <input class="form-check-input" type="checkbox"
+                                name="categories[]"
+                                value="{{ $category->id }}"
                                 id="category_{{ $category->id }}"
                                 {{ in_array($category->id, old('categories', [])) ? 'checked' : '' }}>
                             <label class="form-check-label category-label" for="category_{{ $category->id }}">
@@ -88,11 +96,7 @@
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
-        </div>
-
-        <!-- 販売価格 -->
-        <div class="mb-5">
-            <h3 class="section-title mb-3">販売価格</h3>
+            <!-- 販売価格 -->
             <div class="mb-4">
                 <label for="price" class="form-label required">価格</label>
                 <div class="input-group">
@@ -160,4 +164,39 @@
     display: none;
 }
 </style>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('image');
+    const previewArea = document.getElementById('preview-area');
+    const previewImage = document.getElementById('preview-image');
+    const uploadButtonArea = document.getElementById('upload-button-area');
+    const changeImageButton = document.getElementById('change-image');
+
+    function handleImageChange(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewArea.classList.remove('d-none');
+                uploadButtonArea.classList.add('d-none');
+            }
+            reader.readAsDataURL(file);
+        } else {
+            previewArea.classList.add('d-none');
+            uploadButtonArea.classList.remove('d-none');
+            previewImage.src = '';
+        }
+    }
+
+    imageInput.addEventListener('change', handleImageChange);
+    
+    changeImageButton.addEventListener('click', function() {
+        imageInput.click();
+    });
+});
+</script>
+@endpush
 @endsection
