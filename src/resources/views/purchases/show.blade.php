@@ -40,17 +40,15 @@
                         <h4 class="mb-0 section-title">配送先</h4>
                         <a href="{{ route('purchases.address.edit', $item) }}" class="text-primary text-decoration-none">変更する</a>
                     </div>
-                    <div id="address-display">
-                        @if(Auth::user()->postal_code)
-                            <p class="mb-2 address-text">〒{{ Auth::user()->postal_code }}</p>
-                            <p class="mb-0 address-text">{{ Auth::user()->address }}</p>
-                            @if(Auth::user()->building_name)
-                                <p class="mb-0 address-text">{{ Auth::user()->building_name }}</p>
-                            @endif
-                        @else
-                            <p class="mb-0 text-muted">配送先住所を設定してください</p>
+                    @if(Auth::user()->postal_code)
+                        <p class="mb-2 address-text">〒{{ Auth::user()->postal_code }}</p>
+                        <p class="mb-0 address-text">{{ Auth::user()->address }}</p>
+                        @if(Auth::user()->building_name)
+                            <p class="mb-0 address-text">{{ Auth::user()->building_name }}</p>
                         @endif
-                    </div>
+                    @else
+                        <p class="mb-0 text-muted">配送先住所を設定してください</p>
+                    @endif
                 </div>
             </form>
         </div>
@@ -84,44 +82,6 @@
 </div>
 
 <style>
-@media (min-width: 768px) and (max-width: 850px) {
-    .product-title {
-        font-size: 1.3rem;
-    }
-    .price {
-        font-size: 1.2rem;
-    }
-    .section-title {
-        font-size: 1.1rem;
-    }
-    .address-text {
-        font-size: 0.9rem;
-    }
-    .summary-label {
-        font-size: 0.9rem;
-    }
-    .summary-price {
-        font-size: 1.2rem;
-        font-weight: bold;
-    }
-    .summary-text {
-        font-size: 0.9rem;
-    }
-    .form-select {
-        font-size: 0.9rem;
-    }
-    .btn-lg {
-        font-size: 1rem;
-        padding: 0.5rem 1rem;
-    }
-}
-
-@media (min-width: 1400px) and (max-width: 1540px) {
-    .container-fluid {
-        max-width: 1320px;
-    }
-}
-
 .summary-label {
     font-size: 1.1rem;
     color: #666;
@@ -135,57 +95,38 @@
 .summary-text {
     font-size: 1.1rem;
 }
+
+@media (min-width: 768px) and (max-width: 850px) {
+    .product-title { font-size: 1.3rem; }
+    .price { font-size: 1.2rem; }
+    .summary-label { font-size: 0.9rem; }
+    .summary-price { font-size: 1.2rem; }
+    .summary-text { font-size: 0.9rem; }
+    .btn-lg { font-size: 1rem; }
+}
 </style>
 
 @push('scripts')
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-// DOMの読み込みを待つ
-window.addEventListener('load', function() {
-    // 要素の取得
+document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('purchase-form');
     const select = document.getElementById('payment_method');
     const button = document.getElementById('purchase-button');
     const paymentDisplay = document.getElementById('selected-payment');
-
-    // 住所の状態
     const hasValidAddress = {{ auth()->user()->postal_code && auth()->user()->address ? 'true' : 'false' }};
 
-    // デバッグ用ログ
-    console.log('初期状態:', {
-        'フォーム': form ? '存在します' : '見つかりません',
-        'セレクト': select ? '存在します' : '見つかりません',
-        'ボタン': button ? '存在します' : '見つかりません',
-        '住所': hasValidAddress ? '登録済み' : '未登録'
-    });
-
-    // セレクトの変更イベント
     select.addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-
-        // 選択された支払い方法を表示
-        paymentDisplay.textContent = selectedOption.text;
-
-        // ボタンの有効化
-        if (hasValidAddress && this.value) {
-            button.disabled = false;
-            console.log('ボタンを有効化しました');
-        } else {
-            button.disabled = true;
-            console.log('ボタンを無効化しました');
-        }
+        paymentDisplay.textContent = this.options[this.selectedIndex].text;
+        button.disabled = !(hasValidAddress && this.value);
     });
 
-    // フォームの送信
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
-
         const paymentMethod = select.value;
-        console.log('送信開始:', paymentMethod);
 
         if (paymentMethod === 'credit') {
             button.disabled = true;
-
             try {
                 const response = await fetch('{{ route('purchases.store', $item) }}', {
                     method: 'POST',
@@ -197,7 +138,6 @@ window.addEventListener('load', function() {
                 });
 
                 const data = await response.json();
-
                 if (data.error) {
                     alert(data.error);
                     button.disabled = false;
