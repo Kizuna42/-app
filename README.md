@@ -60,6 +60,7 @@ php artisan storage:link
 php artisan migrate --seed
 ```
 ## PHPunitを用いたテスト
+phpコンテナ上で実行してください
 ```bash
 php artisan test
 ```
@@ -74,7 +75,7 @@ php artisan test
 
 ## ER図
 
-<img width="802" alt="Screenshot 2024-12-29 at 20 27 50" src="index.drawio.png" />
+![Screenshot 2025-01-27 at 22 38 13](https://github.com/user-attachments/assets/f2fc5274-87f0-497c-be66-95b22f682db3)
 
 ## 主要ページ
 
