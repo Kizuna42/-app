@@ -29,8 +29,8 @@
                     <h4 class="mb-4 section-title">支払い方法</h4>
                     <select class="form-select form-select-lg border-0 ps-0" id="payment_method" name="payment_method" required>
                         <option value="" selected disabled>選択してください</option>
-                        <option value="convenience">コンビニ払い</option>
-                        <option value="credit">カード支払い</option>
+                        <option value="convenience">コンビニ決済</option>
+                        <option value="credit">クレジットカード</option>
                     </select>
                 </div>
 
@@ -40,12 +40,12 @@
                         <h4 class="mb-0 section-title">配送先</h4>
                         <a href="{{ route('purchases.address.edit', $item) }}" class="text-primary text-decoration-none">変更する</a>
                     </div>
-                    @if(auth()->user()->postal_code && auth()->user()->address)
-                        <p class="mb-2 address-text">〒{{ substr(auth()->user()->postal_code, 0, 3) }}-{{ substr(auth()->user()->postal_code, 3) }}</p>
-                        <p class="mb-0 address-text">{{ auth()->user()->address }}</p>
-                        <p class="mb-0 address-text">{{ auth()->user()->building_name }}</p>
-                    @else
-                        <p class="text-muted mb-0 address-text">配送先住所を登録してください</p>
+                    @if(Auth::user()->postal_code)
+                        <p class="mb-2 address-text">〒{{ Auth::user()->postal_code }}</p>
+                        <p class="mb-0 address-text">{{ Auth::user()->address }}</p>
+                        @if(Auth::user()->building_name)
+                            <p class="mb-0 address-text">{{ Auth::user()->building_name }}</p>
+                        @endif
                     @endif
                 </div>
             </form>

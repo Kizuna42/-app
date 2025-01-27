@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
+use Illuminate\Validation\ValidationException;
 
 class PurchaseController extends Controller
 {
@@ -36,28 +37,55 @@ class PurchaseController extends Controller
     }
 
     /**
+     * 支払い方法を更新
+     */
+    public function updatePayment(Request $request, Item $item)
+    {
+        try {
+            $validated = $request->validate([
+                'payment_method' => ['required', 'in:credit,convenience'],
+            ]);
+
+            $user = auth()->user();
+            $user->payment_method = $validated['payment_method'];
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'payment_method' => $validated['payment_method'],
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'The selected payment method is invalid.',
+                'errors' => $e->errors(),
+            ], 422);
+        }
+    }
+
+    /**
      * 商品を購入
      */
     public function store(Request $request, Item $item)
     {
-        // 自分の商品は購入できない
-        if ($item->user_id === Auth::id()) {
-            abort(403, '自分の出品した商品は購入できません。');
-        }
-
         // 売り切れ商品は購入できない
         if ($item->is_sold) {
             abort(403, 'この商品は既に売り切れです。');
         }
+
+        $user = Auth::user();
 
         // 商品を購入済みに更新
         $item->update(['is_sold' => true]);
 
         // 購入記録を作成
         $purchase = Purchase::create([
-            'user_id' => Auth::id(),
+            'user_id' => $user->id,
             'item_id' => $item->id,
             'price' => $item->price,
+            'postal_code' => $user->postal_code,
+            'address' => $user->address,
+            'building_name' => $user->building_name,
+            'payment_method' => $request->input('payment_method'),
         ]);
 
         return redirect()->route('purchases.success', $item)
@@ -78,14 +106,25 @@ class PurchaseController extends Controller
      */
     public function updateAddress(Request $request, Item $item)
     {
-        $user = Auth::user();
-        $user->update([
-            'postal_code' => $request->postal_code,
-            'address' => $request->address,
-            'building_name' => $request->building
+        $validated = $request->validate([
+            'postal_code' => 'required|digits:7',
+            'address' => 'required|string|max:255',
+            'building_name' => 'nullable|string|max:255',
+        ], [
+            'postal_code.digits' => '郵便番号は7桁の数字で入力してください。',
+            'postal_code.required' => '郵便番号は必須です。',
+            'address.required' => '住所は必須です。',
         ]);
 
-        return redirect()->route('purchases.show', $item);
+        $user = Auth::user();
+        $user->update($validated);
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => '配送先住所を更新しました。']);
+        }
+
+        return redirect()->route('purchases.show', $item)
+            ->with('success', '配送先住所を更新しました。');
     }
 
     public function createSession(Item $item)

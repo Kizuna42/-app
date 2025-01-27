@@ -9,14 +9,14 @@
             <form method="POST" action="{{ route('purchases.address.store', $item) }}">
                 @csrf
 
-                <div class="mb-4">
+                <div class="mb-3">
                     <label for="postal_code" class="form-label">郵便番号</label>
-                    <input id="postal_code"
-                            type="text"
-                            class="form-control form-control-lg"
-                            name="postal_code"
-                            value="{{ auth()->user()->postal_code }}"
-                            placeholder="1234567">
+                    <input type="text" class="form-control @error('postal_code') is-invalid @enderror"
+                        id="postal_code" name="postal_code" value="{{ old('postal_code', Auth::user()->postal_code) }}"
+                        placeholder="1234567" required>
+                    @error('postal_code')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-4">
