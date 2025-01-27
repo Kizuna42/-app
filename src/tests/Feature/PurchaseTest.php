@@ -64,7 +64,7 @@ class PurchaseTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200)
-            ->assertSee('sold');
+            ->assertSee('Sold');
     }
 
     /** @test */

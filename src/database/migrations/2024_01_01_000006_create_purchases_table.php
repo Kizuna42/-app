@@ -17,6 +17,10 @@ return new class extends Migration
             $table->foreignId('item_id')->constrained()->onDelete('cascade');
             $table->integer('price');
             $table->string('payment_method')->nullable();
+            $table->string('postal_code')->nullable();
+            $table->string('address')->nullable();
+            $table->string('building_name')->nullable();
+            $table->string('status')->default('completed');
             $table->timestamps();
         });
     }

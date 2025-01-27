@@ -13,6 +13,7 @@ class PurchaseFactory extends Factory
         return [
             'user_id' => User::factory(),
             'item_id' => Item::factory(),
+            'price' => $this->faker->numberBetween(100, 10000),
             'payment_method' => $this->faker->randomElement(['credit_card', 'bank_transfer']),
             'postal_code' => $this->faker->postcode,
             'address' => $this->faker->address,

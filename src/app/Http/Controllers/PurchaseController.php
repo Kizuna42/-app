@@ -67,29 +67,35 @@ class PurchaseController extends Controller
      */
     public function store(Request $request, Item $item)
     {
-        // 売り切れ商品は購入できない
-        if ($item->is_sold) {
-            abort(403, 'この商品は既に売り切れです。');
+        $user = auth()->user();
+        if ($item->user_id === $user->id) {
+            return response()->json([
+                'message' => '自分の出品した商品は購入できません。'
+            ], 403);
         }
 
-        $user = Auth::user();
+        if ($item->is_sold) {
+            return response()->json([
+                'message' => 'この商品は既に売り切れです。'
+            ], 403);
+        }
 
-        // 商品を購入済みに更新
-        $item->update(['is_sold' => true]);
-
-        // 購入記録を作成
-        $purchase = Purchase::create([
+        // 購入処理
+        Purchase::create([
             'user_id' => $user->id,
             'item_id' => $item->id,
             'price' => $item->price,
+            'payment_method' => $request->input('payment_method'),
             'postal_code' => $user->postal_code,
             'address' => $user->address,
             'building_name' => $user->building_name,
-            'payment_method' => $request->input('payment_method'),
+            'status' => 'completed'
         ]);
 
-        return redirect()->route('purchases.success', $item)
-            ->with('success', '商品の購入が完了しました。');
+        // 商品を売り切れ状態に更新
+        $item->update(['is_sold' => true]);
+
+        return redirect()->route('purchases.success', ['item' => $item->id]);
     }
 
     /**
