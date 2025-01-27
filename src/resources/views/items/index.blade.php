@@ -38,7 +38,7 @@
                     <a href="{{ route('items.show', $item) }}" class="text-decoration-none text-dark">
                         <div class="card h-100 border-0 position-relative item-card">
                             <div class="image-wrapper position-relative" style="padding-top: 100%;">
-                                <img src="{{ $item->image_url ?? 'default.jpg' }}" class="card-img-top position-absolute top-0 start-0 w-100 h-100" alt="{{ $item->name }}" style="object-fit: cover;">
+                                <img src="{{ $item->image }}" class="card-img-top position-absolute top-0 start-0 w-100 h-100" alt="{{ $item->name }}" style="object-fit: cover;">
                                 @if($item->is_sold)
                                     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50">
                                         <span class="text-white h4 mb-0">Sold</span>

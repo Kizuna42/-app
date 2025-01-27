@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="d-flex align-items-start">
                             <div class="me-2">
                                 ${data.user_avatar
-                                    ? `<img src="${data.user_avatar.startsWith('/') ? '' : '/'}storage/${data.user_avatar}" alt="${data.user_name}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">`
+                                    ? `<img src="/storage/${data.user_avatar}" alt="${data.user_name}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">`
                                     : `<div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                                         <span>${data.user_name.charAt(0)}</span>
                                     </div>`

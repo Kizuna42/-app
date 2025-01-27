@@ -136,30 +136,36 @@ class PurchaseController extends Controller
 
     public function createSession(Item $item)
     {
-        Stripe::setApiKey(config('services.stripe.secret'));
+        try {
+            Stripe::setApiKey(config('services.stripe.secret'));
 
-        $session = Session::create([
-            'payment_method_types' => ['card'],
-            'line_items' => [[
-                'price_data' => [
-                    'currency' => 'jpy',
-                    'product_data' => [
-                        'name' => $item->name,
+            $session = Session::create([
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'price_data' => [
+                        'currency' => 'jpy',
+                        'product_data' => [
+                            'name' => $item->name,
+                        ],
+                        'unit_amount' => $item->price,
                     ],
-                    'unit_amount' => $item->price,
-                ],
-                'quantity' => 1,
-            ]],
-            'mode' => 'payment',
-            'success_url' => route('purchases.success', $item),
-            'cancel_url' => route('purchases.show', $item),
-        ]);
+                    'quantity' => 1,
+                ]],
+                'mode' => 'payment',
+                'success_url' => route('purchases.success', $item),
+                'cancel_url' => route('purchases.show', $item),
+            ]);
 
-        return response()->json(['id' => $session->id]);
+            return response()->json(['id' => $session->id]);
+        } catch (\Exception $e) {
+            \Log::error('Stripe session creation failed: ' . $e->getMessage());
+            return response()->json(['error' => '決済処理の準備中にエラーが発生しました。'], 500);
+        }
     }
 
     public function success(Item $item)
     {
-        return view('purchases.success', compact('item'));
+        return redirect()->route('items.index')
+            ->with('success', '商品の購入が完了しました。');
     }
 }

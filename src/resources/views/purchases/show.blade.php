@@ -40,13 +40,17 @@
                         <h4 class="mb-0 section-title">配送先</h4>
                         <a href="{{ route('purchases.address.edit', $item) }}" class="text-primary text-decoration-none">変更する</a>
                     </div>
-                    @if(Auth::user()->postal_code)
-                        <p class="mb-2 address-text">〒{{ Auth::user()->postal_code }}</p>
-                        <p class="mb-0 address-text">{{ Auth::user()->address }}</p>
-                        @if(Auth::user()->building_name)
-                            <p class="mb-0 address-text">{{ Auth::user()->building_name }}</p>
+                    <div id="address-display">
+                        @if(Auth::user()->postal_code)
+                            <p class="mb-2 address-text">〒{{ Auth::user()->postal_code }}</p>
+                            <p class="mb-0 address-text">{{ Auth::user()->address }}</p>
+                            @if(Auth::user()->building_name)
+                                <p class="mb-0 address-text">{{ Auth::user()->building_name }}</p>
+                            @endif
+                        @else
+                            <p class="mb-0 text-muted">配送先住所を設定してください</p>
                         @endif
-                    @endif
+                    </div>
                 </div>
             </form>
         </div>

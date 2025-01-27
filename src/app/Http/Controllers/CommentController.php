@@ -36,6 +36,10 @@ class CommentController extends Controller
         return response()->json([
             'comment' => $comment,
             'comments_count' => $item->comments()->count(),
+            'user_name' => Auth::user()->name,
+            'user_avatar' => Auth::user()->avatar ? 'avatars/' . Auth::user()->avatar : null,
+            'created_at' => $comment->created_at->format('Y/m/d H:i'),
+            'content' => $comment->content,
         ]);
     }
 }
