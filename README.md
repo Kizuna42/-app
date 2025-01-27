@@ -59,6 +59,12 @@ php artisan storage:link
 ```bash
 php artisan migrate --seed
 ```
+## PHPunitを用いたテスト
+```bash
+php artisan test
+```
+※実際の動作確認は会員登録からお願いいたします。
+
 ## 使用技術(実行環境)
 
 - PHP: 7.4.9
