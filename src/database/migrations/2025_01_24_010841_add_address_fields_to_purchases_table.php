@@ -12,11 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('purchases', function (Blueprint $table) {
-            // shipping_addressカラムを削除
-            $table->dropColumn('shipping_address');
-
-            // 新しい配送先情報カラムを追加
-            $table->string('postal_code', 7)->nullable();
+            $table->string('postal_code')->nullable();
+            $table->string('prefecture')->nullable();
+            $table->string('city')->nullable();
             $table->string('address')->nullable();
             $table->string('building_name')->nullable();
         });
@@ -28,15 +26,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('purchases', function (Blueprint $table) {
-            // 追加したカラムを削除
             $table->dropColumn([
                 'postal_code',
+                'prefecture',
+                'city',
                 'address',
                 'building_name',
             ]);
-
-            // shipping_addressカラムを復元
-            $table->string('shipping_address');
         });
     }
 };

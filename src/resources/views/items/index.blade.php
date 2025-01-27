@@ -37,13 +37,13 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <a href="{{ route('items.show', $item) }}" class="text-decoration-none text-dark">
                         <div class="card h-100 border-0 position-relative item-card">
-                            @if($item->is_sold)
-                                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.5); z-index: 1;">
-                                    <span class="badge bg-danger px-3 py-2 fs-5">Sold</span>
-                                </div>
-                            @endif
                             <div class="image-wrapper position-relative" style="padding-top: 100%;">
                                 <img src="{{ $item->image }}" class="card-img-top position-absolute top-0 start-0 w-100 h-100" alt="{{ $item->name }}" style="object-fit: cover;">
+                                @if($item->is_sold)
+                                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50">
+                                        <span class="text-white h4 mb-0">sold</span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="card-body px-0 py-2">
                                 <h5 class="card-title mb-1 text-truncate">{{ $item->name }}</h5>

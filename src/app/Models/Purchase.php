@@ -12,9 +12,12 @@ class Purchase extends Model
     protected $fillable = [
         'user_id',
         'item_id',
+        'price',
         'status',
         'payment_method',
         'postal_code',
+        'prefecture',
+        'city',
         'address',
         'building_name',
         'tracking_number',

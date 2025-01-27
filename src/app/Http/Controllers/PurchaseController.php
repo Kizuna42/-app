@@ -12,6 +12,11 @@ use Stripe\Checkout\Session;
 
 class PurchaseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * 購入確認画面を表示
      */
@@ -35,66 +40,27 @@ class PurchaseController extends Controller
      */
     public function store(Request $request, Item $item)
     {
+        // 自分の商品は購入できない
+        if ($item->user_id === Auth::id()) {
+            abort(403, '自分の出品した商品は購入できません。');
+        }
+
+        // 売り切れ商品は購入できない
         if ($item->is_sold) {
-            return redirect()->route('items.show', $item)
-                ->with('error', 'この商品は既に売却済みです。');
+            abort(403, 'この商品は既に売り切れです。');
         }
 
-        $user = Auth::user();
-        if (!$user->postal_code || !$user->address) {
-            return redirect()->route('purchases.address.edit', $item)
-                ->with('error', '配送先住所を登録してください。');
-        }
+        // 商品を購入済みに更新
+        $item->update(['is_sold' => true]);
 
-        $validated = $request->validate([
-            'payment_method' => 'required|in:convenience,credit',
+        // 購入記録を作成
+        $purchase = Purchase::create([
+            'user_id' => Auth::id(),
+            'item_id' => $item->id,
+            'price' => $item->price,
         ]);
 
-        // カード支払いの場合はStripe決済を実行
-        if ($validated['payment_method'] === 'credit') {
-            try {
-                Stripe::setApiKey(config('services.stripe.secret'));
-                $session = Session::create([
-                    'payment_method_types' => ['card'],
-                    'line_items' => [[
-                        'price_data' => [
-                            'currency' => 'jpy',
-                            'product_data' => [
-                                'name' => $item->name,
-                            ],
-                            'unit_amount' => $item->price,
-                        ],
-                        'quantity' => 1,
-                    ]],
-                    'mode' => 'payment',
-                    'success_url' => route('purchases.success', $item),
-                    'cancel_url' => route('purchases.show', $item),
-                ]);
-
-                return response()->json(['sessionId' => $session->id]);
-            } catch (\Exception $e) {
-                return response()->json(['error' => '決済処理に失敗しました。'], 500);
-            }
-        }
-
-        // コンビニ支払いの場合は購入情報を保存
-        DB::transaction(function () use ($item, $validated, $user) {
-            $item->update(['is_sold' => true]);
-
-            Purchase::create([
-                'user_id' => Auth::id(),
-                'item_id' => $item->id,
-                'payment_method' => $validated['payment_method'],
-                'status' => 'pending',
-                'postal_code' => $user->postal_code,
-                'prefecture' => $user->prefecture,
-                'city' => $user->city,
-                'address' => $user->address,
-                'building_name' => $user->building_name,
-            ]);
-        });
-
-        return redirect()->route('users.purchases')
+        return redirect()->route('purchases.success', $item)
             ->with('success', '商品の購入が完了しました。');
     }
 
@@ -144,5 +110,10 @@ class PurchaseController extends Controller
         ]);
 
         return response()->json(['id' => $session->id]);
+    }
+
+    public function success(Item $item)
+    {
+        return view('purchases.success', compact('item'));
     }
 }
