@@ -37,26 +37,27 @@ class PurchaseController extends Controller
     }
 
     /**
-     * 支払い方法を更新
+     * 支払い方法を更新する
      */
     public function updatePayment(Request $request, Item $item)
     {
         try {
             $validated = $request->validate([
-                'payment_method' => ['required', 'in:credit,convenience'],
+                'payment_method' => 'required|in:credit_card,bank_transfer,convenience_store',
+            ], [
+                'payment_method.required' => '支払い方法を選択してください',
+                'payment_method.in' => '無効な支払い方法です',
             ]);
 
-            $user = auth()->user();
-            $user->payment_method = $validated['payment_method'];
-            $user->save();
+            // セッションに支払い方法を保存
+            $request->session()->put('payment_method', $validated['payment_method']);
 
             return response()->json([
-                'success' => true,
-                'payment_method' => $validated['payment_method'],
+                'payment_method' => $validated['payment_method']
             ]);
-        } catch (ValidationException $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
-                'message' => 'The selected payment method is invalid.',
+                'message' => '無効な支払い方法です',
                 'errors' => $e->errors(),
             ], 422);
         }

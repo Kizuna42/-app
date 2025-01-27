@@ -64,3 +64,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/purchases/{item}/create-session', [PurchaseController::class, 'createSession']);
 });
+
+// 支払い方法の更新
+Route::post('/purchases/{item}/payment', [App\Http\Controllers\PurchaseController::class, 'updatePayment'])
+    ->name('purchases.update-payment')
+    ->middleware('auth');
