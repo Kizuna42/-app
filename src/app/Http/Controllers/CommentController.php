@@ -6,6 +6,8 @@ use App\Models\Comment;
 use App\Models\Item;
 use App\Http\Requests\CommentRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -14,53 +16,26 @@ class CommentController extends Controller
         $this->middleware('auth');
     }
 
-    public function store(CommentRequest $request, Item $item)
+    public function store(Request $request, Item $item)
     {
-        try {
-            DB::beginTransaction();
+        $validator = validator($request->all(), [
+            'content' => 'required|string|max:255',
+        ]);
 
-            $comment = Comment::create([
-                'content' => $request->content,
-                'user_id' => auth()->id(),
-                'item_id' => $item->id,
-            ]);
-
-            // コメント数を更新するためにitemを再取得
-            $item->refresh();
-            $commentsCount = $item->comments()->count();
-
-            DB::commit();
-
-            if ($request->expectsJson()) {
-                $user = auth()->user();
-                return response()->json([
-                    'success' => true,
-                    'message' => 'コメントを投稿しました',
-                    'content' => $comment->content,
-                    'user_name' => $user->name,
-                    'user_avatar' => $user->avatar,
-                    'created_at' => $comment->created_at->format('Y/m/d H:i'),
-                    'comments_count' => $commentsCount
-                ]);
-            }
-
-            return redirect()->back()
-                ->with('success', 'コメントを投稿しました')
-                ->with('commentsCount', $commentsCount);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'コメントの投稿に失敗しました'
-                ], 500);
-            }
-
-            return redirect()->back()
-                ->with('error', 'コメントの投稿に失敗しました')
-                ->withInput();
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
         }
+
+        $comment = $item->comments()->create([
+            'user_id' => Auth::id(),
+            'content' => $request->content,
+        ]);
+
+        return response()->json([
+            'comment' => $comment,
+            'comments_count' => $item->comments()->count(),
+        ]);
     }
 }

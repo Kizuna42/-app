@@ -18,6 +18,7 @@ class ItemController extends Controller
         $tab = $request->input('tab', 'recommend');
         $query = Item::with(['user', 'categories']);
         $search = $request->input('search');
+        $category = $request->input('category');
 
         if ($tab === 'mylist') {
             if (!Auth::check()) {
@@ -34,6 +35,12 @@ class ItemController extends Controller
             // 自分の出品した商品を除外（テーブル名を明示的に指定）
             $query->where('items.user_id', '!=', Auth::id());
 
+            if ($category) {
+                $query->whereHas('categories', function ($q) use ($category) {
+                    $q->where('categories.id', $category);
+                });
+            }
+
             $items = $query->latest()
                 ->paginate(12);
         } else {
@@ -46,10 +53,16 @@ class ItemController extends Controller
                 $query->where('name', 'like', "%{$search}%");
             }
 
+            if ($category) {
+                $query->whereHas('categories', function ($q) use ($category) {
+                    $q->where('categories.id', $category);
+                });
+            }
+
             $items = $query->latest()->paginate(12);
         }
 
-        return view('items.index', compact('items', 'tab'));
+        return view('items.index', compact('items', 'tab', 'search'));
     }
 
     /**

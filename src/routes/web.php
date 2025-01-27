@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
 
 // 商品コメントを保存するためのルート
 Route::post('/items/{item}/comments', [CommentController::class, 'store'])->name('items.comments.store');
+Route::post('/item/{item}/comment', [CommentController::class, 'store'])->middleware('auth');
 
 // いいね機能
 Route::middleware('auth')->group(function () {
