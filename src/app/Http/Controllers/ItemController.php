@@ -31,6 +31,9 @@ class ItemController extends Controller
                 $query->where('name', 'like', "%{$search}%");
             }
 
+            // 自分の出品した商品を除外（テーブル名を明示的に指定）
+            $query->where('items.user_id', '!=', Auth::id());
+
             $items = $query->latest()
                 ->paginate(12);
         } else {
